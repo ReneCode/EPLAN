@@ -2,12 +2,23 @@ var assert = require('assert');
 var wagner = require('wagner-core');
 var mongoose = require('mongoose');
 
-before(function() {
-	require('../schema/models.js')(wagner);
-});
-
-
 describe('Database', function() {
+
+
+	before(function() {
+		require('../schema/models.js')(wagner);
+	});
+
+	after(function(done) {
+		wagner.invoke(function(db) {
+			db.connection.close(function() {
+				done();
+			});
+		});
+	});
+
+
+
 	describe('should work on parts.', function() {
 		var PartModel = undefined;
 

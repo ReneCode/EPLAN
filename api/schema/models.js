@@ -3,6 +3,7 @@ var _ = require('underscore');
 
 module.exports = function(wagner) {
 
+//	console.log("connect DB");
 	mongoose.connect('mongodb://localhost:27017/eplan');
 
 	wagner.factory('db', function() {
