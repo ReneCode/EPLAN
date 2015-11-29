@@ -32,7 +32,15 @@ module.exports = function(wagner) {
 
  	api.get('/part', wagner.invoke(function(Part) {
  		return function(req, res) {
- 			Part.find({}).sort('partnr').exec(function(err, data) {
+ 			q = req.query.q; 
+ 			var filter = {};
+ 			if (q) {
+ 				var partfilter = {partnr: { $regex: '.*' + q + '.*'} };
+ 				var descfilter = {description1: { $regex: '.*' + q + '.*'} };
+ 				filter = { $or: [partfilter, descfilter] } 
+ 			}
+ 			console.log("query:", JSON.stringify(filter) );
+ 			Part.find(filter).sort('partnr').exec(function(err, data) {
 // 				console.log(data);
  				res.json({data:data});
  			});
