@@ -30,6 +30,14 @@ module.exports = function(wagner) {
 		};
 	}));
 
+ 	api.get('/part', wagner.invoke(function(Part) {
+ 		return function(req, res) {
+ 			Part.find({}).sort('partnr').exec(function(err, data) {
+// 				console.log(data);
+ 				res.json({data:data});
+ 			});
+ 		};
+ 	}));
 
 	return api;
 };

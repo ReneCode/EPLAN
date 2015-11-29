@@ -44,10 +44,10 @@ describe('Database', function() {
 
 
 		it ('count created parts', function(done) {
-			var p1 = { partnr: 'abc', manufacturer:'siemens'};
+			var p1 = { partnr: 'abc', manufacturer:'ABB'};
 			var p2 = { partnr: 'xyz', manufacturer:'siemens'};
-			PartModel.create(p1,p2, function(err, newPart) {
-				newPart.save();
+			PartModel.create([p1,p2], function(err, newPart) {
+				newPart[0].save();
 				PartModel.count({}, function(err, foundCount) {
 					assert.equal(foundCount, 2); 
 					done();  
@@ -59,8 +59,10 @@ describe('Database', function() {
 		it ('find part', function(done) {
 			var p1 = { partnr: 'abc', manufacturer:'abb'};
 			var p2 = { partnr: 'xyz', manufacturer:'sie'};
-			PartModel.create(p1,p2, function(err, newPart) {
-				newPart.save();
+			PartModel.create([p1,p2], function(err, newPart) {
+//				console.log(newPart);
+				newPart[0].save();
+				newPart[1].save();
 				PartModel.find({partnr:'xyz'}, function(err, found) {
 					assert.equal(found.length, 1);
 					assert.equal(found[0].manufacturer, 'sie');

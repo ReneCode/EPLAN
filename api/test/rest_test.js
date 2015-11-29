@@ -41,7 +41,7 @@ describe('REST Server', function() {
 	});
 
 
-	it('get part data', function(done) {
+	it('get one part data', function(done) {
 		// create part
 		var url = URL_ROOT + '/api/v1/part';
 		var name = "test1234";
@@ -63,6 +63,31 @@ describe('REST Server', function() {
 		});
 	});		
 
+	it('get all part data', function(done) {
+
+		PartModel = wagner.invoke(function(Part) {
+			return Part;
+		});
+		PartModel.remove({}, function(err) {
+
+			var p1 = { partnr: 'lap-part', manufacturer:'lap'};
+			var p2 = { partnr: 'abb-part', manufacturer:'abb'};
+			var p3 = { partnr: 'pxc-part', manufacturer:'pxc'};
+
+			PartModel.create([p1,p2,p3], function(err, newParts) {
+
+				var url = URL_ROOT + '/api/v1/part';
+				superagent.get(url, function(err, res) {
+					assert.equal(res.body.data.length, 3); 
+					assert.equal(res.body.data[0].partnr, 'abb-part');
+					assert.equal(res.body.data[1].manufacturer, 'lap');
+					assert.equal(res.body.data[2].partnr, 'pxc-part');
+					done();
+				});
+				
+			});
+		});
+	});
 	
 
 });
