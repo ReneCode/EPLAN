@@ -1,0 +1,37 @@
+extends layout
+
+block content
+  div.body.container
+    div.row
+      div.col-sm-10.col-sm-offset-1.col-sx-12
+        form.navbar-form.navbar-left(role="search")
+          div.form-group
+            input.form-control(type="text" ng-model="searchText")
+          button.btn.btn-primary(ng-click="searchParts()") Search
+    div.row
+      div.col-sm-12
+        ol.list-inline
+          li Artikel
+          li /
+          li Elektrotechnik
+          li /
+          li Kabel
+
+    #{title}
+
+    div.row
+      div.col-sm-12
+        table.table.table-striped.table-hover.table-condensed
+          thead
+            tr
+              th
+              th Partnr
+              th Manufacturer
+              th Description
+          tbody(ng-repeat="part in partList")
+            tr
+              td 
+                input(type="checkbox")
+              td {{part.partnr}}
+              td {{part.manufacturer}}
+              td {{part.description1}}

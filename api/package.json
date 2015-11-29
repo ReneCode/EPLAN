@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha ./test/",
     "watch": "gulp watch",
-    "import": "node import.js"
+    "import": "node import.js",
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "body-parser": "^1.14.1",
+    "cors": "^2.7.1",
     "express": "^4.13.3",
     "mongoose": "^4.2.8",
     "underscore": "^1.8.3",
