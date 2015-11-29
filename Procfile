@@ -1,2 +1,2 @@
-web: node app/bin/www
-web: node api/index.js
+worker: node api/index.js
+web: node app/bin/www.js
