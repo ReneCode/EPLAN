@@ -17,8 +17,6 @@ module.exports = function(wagner) {
 					mongoConfig.portnum + "/eplan";
 	}
 
-	console.log("mongoConnect:", connectUrl);
-
 	mongoose.connect(connectUrl);
 
 	wagner.factory('db', function() {
