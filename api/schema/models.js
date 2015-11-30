@@ -4,7 +4,22 @@ var _ = require('underscore');
 module.exports = function(wagner) {
 
 //	console.log("connect DB");
-	mongoose.connect('mongodb://localhost:27017/eplan');
+
+
+	var connectUrl = 'mongodb://localhost:27017/eplan';
+
+	var mongoConfig = require('./mongo_config.json');
+	if (mongoConfig.username) {
+		connectUrl = 'mongodb://' + 
+					mongoConfig.username + ":" + 
+					mongoConfig.password + "@" +
+					mongoConfig.hostname + ":" + 
+					mongoConfig.portnum + "/eplan";
+	}
+
+	console.log("mongoConnect:", connectUrl);
+
+	mongoose.connect(connectUrl);
 
 	wagner.factory('db', function() {
 		return mongoose;
