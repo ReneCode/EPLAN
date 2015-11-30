@@ -32,6 +32,9 @@ module.exports = function(wagner) {
 
  	api.get('/part', wagner.invoke(function(Part) {
  		return function(req, res) {
+ 			skip = req.query.skip || 0;
+ 			limit = req.query.limit || 100;
+
  			q = req.query.q; 
  			var filter = {};
  			if (q) {
@@ -40,7 +43,7 @@ module.exports = function(wagner) {
  				filter = { $or: [partfilter, descfilter] } 
  			}
  			console.log("query:", JSON.stringify(filter) );
- 			Part.find(filter).sort('partnr').exec(function(err, data) {
+ 			Part.find(filter).skip(skip).limit(limit).sort('partnr').exec(function(err, data) {
 // 				console.log(data);
  				res.json({data:data});
  			});
