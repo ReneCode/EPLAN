@@ -64,7 +64,6 @@ describe('REST Server', function() {
 	});		
 
 	it('get all part data', function(done) {
-
 		PartModel = wagner.invoke(function(Part) {
 			return Part;
 		});
@@ -82,6 +81,30 @@ describe('REST Server', function() {
 					assert.equal(res.body.data[0].partnr, 'abb-part');
 					assert.equal(res.body.data[1].manufacturer, 'lap');
 					assert.equal(res.body.data[2].partnr, 'pxc-part');
+					done();
+				});
+				
+			});
+		});
+	});
+	
+	it('get filted part data', function(done) {
+		PartModel = wagner.invoke(function(Part) {
+			return Part;
+		});
+		PartModel.remove({}, function(err) {
+
+			var p1 = { partnr: 'ab7-part', manufacturer:'m13'};
+			var p2 = { partnr: 'ab59-part', manufacturer:'m14'};
+			var p3 = { partnr: 'ab57-part', manufacturer:'m24'};
+
+			PartModel.create([p1,p2,p3], function(err, newParts) {
+				// query on "b5"
+				var url = URL_ROOT + '/api/v1/part?q=b5';
+				superagent.get(url, function(err, res) {
+					assert.equal(res.body.data.length, 2); 
+					assert.equal(res.body.data[0].partnr, 'ab57-part');
+					assert.equal(res.body.data[1].manufacturer, 'm14');
 					done();
 				});
 				
