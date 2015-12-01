@@ -4,9 +4,13 @@ eplanApp.controller('MainController', function($scope, $http, $location) {
 
   var URL_ROOT = "http://localhost:64010";
   if ($location.host() != 'localhost') {
-    // change route to different service 
-    // look at .htaccess !
-    URL_ROOT = "/rest";
+    // change route to subdomain "<protocol>://api.<host>"
+    // =>   different service / look at .htaccess !
+    URL_ROOT = $location.protocol() + "://api." + $location.host();
+    var port = $location.port();
+    if (port) {
+      URL_ROOT += ":" + port;
+    }
   }
 
 	$scope.partList = {};
@@ -18,8 +22,6 @@ eplanApp.controller('MainController', function($scope, $http, $location) {
   };
 
   function getParts(searchText) {
-    console.log("getParts");
-
     $http.get(URL_ROOT + '/api/v1/part', {params:{q:searchText}} )
       .then( 
         // success
