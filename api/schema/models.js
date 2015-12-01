@@ -2,10 +2,6 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 
 module.exports = function(wagner) {
-
-//	console.log("connect DB");
-
-
 	var connectUrl = 'mongodb://localhost:27017/eplan';
 
 	var mongoConfig = require('./mongo_config.json');

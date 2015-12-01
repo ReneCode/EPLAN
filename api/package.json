@@ -21,6 +21,7 @@
     "body-parser": "^1.14.1",
     "cors": "^2.7.1",
     "express": "^4.13.3",
+    "http": "0.0.0",
     "mongoose": "^4.2.8",
     "underscore": "^1.8.3",
     "wagner-core": "^0.2.0"
