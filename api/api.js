@@ -42,8 +42,8 @@ module.exports = function(wagner) {
  				var descfilter = {description1: { $regex: '.*' + q + '.*'} };
  				filter = { $or: [partfilter, descfilter] } 
  			}
- 			console.log("query:", JSON.stringify(filter) );
- 			Part.find(filter).skip(skip).limit(limit).sort('partnr').exec(function(err, data) {
+// 			console.log("skip:", skip, " limit:", limit, " query:", JSON.stringify(filter) );
+ 			Part.find(filter).sort('partnr').skip(skip).limit(limit).exec(function(err, data) {
 // 				console.log(data);
  				res.json({data:data});
  			});

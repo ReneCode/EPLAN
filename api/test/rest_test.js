@@ -113,6 +113,35 @@ describe('REST Server', function() {
 	});
 	
 
+	it('get skped / limit part data', function(done) {
+		PartModel = wagner.invoke(function(Part) {
+			return Part;
+		});
+		PartModel.remove({}, function(err) {
+
+			var p1 = { partnr: 'ab5-part', manufacturer:'m13'};
+			var p2 = { partnr: 'ab4-part', manufacturer:'m13'};
+			var p3 = { partnr: 'ab3-part', manufacturer:'m13'};
+			var p4 = { partnr: 'ab2-part', manufacturer:'m13'};
+			var p5 = { partnr: 'ab1-part', manufacturer:'m13'};
+			var p6 = { partnr: 'ab6-part', manufacturer:'m13'};
+			var p7 = { partnr: 'aa7-part', manufacturer:'m13'};
+			var p8 = { partnr: 'aa8-part', manufacturer:'m13'};
+
+			PartModel.create([p1,p2,p3,p4,p5,p6,p7,p8], function(err, newParts) {
+				// get 3 parts and skip the first 2 (ab1,ab2) 
+				var url = URL_ROOT + '/api/v1/part?q=ab&limit=3&skip=2';
+				superagent.get(url, function(err, res) {
+					assert.equal(res.body.data.length, 3); 
+					assert.equal(res.body.data[0].partnr, 'ab3-part');
+					assert.equal(res.body.data[1].partnr, 'ab4-part');
+					assert.equal(res.body.data[2].partnr, 'ab5-part');
+					done();
+				});
+				
+			});
+		});
+	});
 });
 
 
