@@ -1,6 +1,14 @@
 var eplanApp = angular.module('eplanApp', []);
 
-eplanApp.controller('MainController', function($scope, $http) {
+eplanApp.controller('MainController', function($scope, $http, $location) {
+
+  var URL_ROOT = "http://localhost:64010";
+  if ($location.host() != 'localhost') {
+    // change route to different service 
+    // look at .htaccess !
+    URL_ROOT = "/rest";
+  }
+
 	$scope.partList = {};
   getParts();
 
@@ -10,15 +18,12 @@ eplanApp.controller('MainController', function($scope, $http) {
   };
 
   function getParts(searchText) {
-
-    var URL_ROOT = "http://localhost:64010";
     console.log("getParts");
 
     $http.get(URL_ROOT + '/api/v1/part', {params:{q:searchText}} )
       .then( 
         // success
         function(response) {
-          console.log("success >>", response);
           $scope.partList = response.data.data;
         },
         // error
@@ -31,9 +36,6 @@ eplanApp.controller('MainController', function($scope, $http) {
           console.log("statusText:", response.statusText);
         }
       ); 
-
-
-
   }
 
 });
