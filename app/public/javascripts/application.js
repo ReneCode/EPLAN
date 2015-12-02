@@ -8,7 +8,7 @@ eplanApp.controller('MainController', function($scope, $http, $location) {
   var host = $location.host();
   // remove the subdomain
   host = host.match(/[^\.]*\.[^.]*$/)[0];
-  if (host() != 'localhost') {
+  if (host != 'localhost') {
     // change route to subdomain "<protocol>://api.<host>"
     // =>   different service / look at .htaccess !
     URL_ROOT = $location.protocol() + "://api." + host;
