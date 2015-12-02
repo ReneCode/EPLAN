@@ -1,7 +1,8 @@
 var wagner = require('wagner-core');
 var _ = require('underscore');
 
-require('./schema/models.js')(wagner);
+require('./config')(wagner);
+require('./schema/models')(wagner);
 
 PartsModel = wagner.invoke(function(Part) {
 	return Part;
