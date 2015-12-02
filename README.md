@@ -1,7 +1,7 @@
 ## experimental EPLAN application 
 
 ### config
-set the configuration in:
+please set the configuration in:
 
     config/config.json
  
