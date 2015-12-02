@@ -3,10 +3,15 @@ var eplanApp = angular.module('eplanApp', []);
 eplanApp.controller('MainController', function($scope, $http, $location) {
 
   var URL_ROOT = "http://localhost:64010";
-  if ($location.host() != 'localhost') {
+
+  // todo: put that into a user-service
+  var host = $location.host();
+  // remove the subdomain
+  host = host.match(/[^\.]*\.[^.]*$/)[0];
+  if (host() != 'localhost') {
     // change route to subdomain "<protocol>://api.<host>"
     // =>   different service / look at .htaccess !
-    URL_ROOT = $location.protocol() + "://api." + $location.host();
+    URL_ROOT = $location.protocol() + "://api." + host;
     var port = $location.port();
     if (port) {
       URL_ROOT += ":" + port;
