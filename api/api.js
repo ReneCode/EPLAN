@@ -32,7 +32,6 @@ module.exports = function(wagner) {
 
  	api.get('/part', wagner.invoke(function(Part) {
  		return function(req, res) {
- 			console.log("/part called");
  			skip = req.query.skip || 0;
  			limit = req.query.limit || 100;
 

@@ -1,3 +1,4 @@
 node_modules
-try
+try/
 npm-debug.log
+config/

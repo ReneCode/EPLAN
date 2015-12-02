@@ -4,13 +4,16 @@ var _ = require('underscore');
 module.exports = function(wagner) {
 	var connectUrl = 'mongodb://localhost:27017/eplan';
 
-	var mongoConfig = require('./mongo_config.json');
-	if (mongoConfig.username) {
+	var cfg = wagner.invoke(function(config) {
+		return config;
+	});
+
+	if (cfg.mongodb.username) {
 		connectUrl = 'mongodb://' + 
-					mongoConfig.username + ":" + 
-					mongoConfig.password + "@" +
-					mongoConfig.hostname + ":" + 
-					mongoConfig.portnum + "/eplan";
+					cfg.mongodb.username + ":" + 
+					cfg.mongodb.password + "@" +
+					cfg.mongodb.hostname + ":" + 
+					cfg.mongodb.portnum + "/eplan";
 	}
 
 	mongoose.connect(connectUrl);

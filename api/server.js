@@ -5,6 +5,9 @@ module.exports = function() {
 	var wagner = require('wagner-core');
 	var cors = require('cors');
 
+	// initialize the 'Config' service
+	require('./config.js')(wagner);
+
 	require('./schema/models.js')(wagner);
 
 	var app = express();
