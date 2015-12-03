@@ -11,21 +11,6 @@ PartsModel = wagner.invoke(function(Part) {
 
 var fileData = require('../try/parts.json');
 
-/*
-var p1 = {partnr:"xya"};
-var p2 = {partnr:"xsdf"};
-PartsModel.create([p1,p2], function(err, data) {
-	if (err) {
-		console.log("Error:", err);
-	}
-	console.log(data);
-
-	closeConnection();
-
-});
-*/
-
-
 // import all parts as one array
 PartsModel.create(fileData.parts, function(err, data) {
 	if (err) {
