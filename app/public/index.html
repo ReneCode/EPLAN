@@ -54,14 +54,8 @@
                             <th>Description</th>
                         </tr>
                     </thead>
-                    <tbody ng-repeat="part in partList">
-                        <tr>
-                            <td>
-                                <input type="checkbox">
-                            </td>
-                            <td>{{part.partnr}}</td>
-                            <td>{{part.manufacturer}}</td>
-                            <td>{{part.description1}}</td>
+                    <tbody>
+                        <tr part-row ng-repeat="part in partList">
                         </tr>
                     </tbody>
                 </table>

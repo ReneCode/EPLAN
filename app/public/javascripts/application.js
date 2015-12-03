@@ -57,3 +57,10 @@ eplanApp.service("utility", function($location) {
   }
 
 });
+
+
+eplanApp.directive('partRow', function() {
+  return {
+    templateUrl: 'templates/part-row-template.html'
+  }
+})
