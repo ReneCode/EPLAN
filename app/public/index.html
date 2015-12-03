@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="eplanApp">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parts Management</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+
+<body ng-controller="MainController">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.js"></script>
+    <script src="/javascripts/application.js"></script>
+    <nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header"><a href="#" class="navbar-brand">Parts Management</a>
+            </div>
+        </div>
+    </nav>
+    <div class="body container">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1 col-sx-12">
+                <form role="search" class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" ng-model="searchText" class="form-control">
+                    </div>
+                    <button ng-click="searchParts()" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <ol class="list-inline">
+                    <li>Artikel</li>
+                    <li>/</li>
+                    <li>Elektrotechnik</li>
+                    <li>/</li>
+                    <li>Kabel</li>
+                </ol>
+            </div>
+        </div>
+        <Parts Management></Parts Management>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Partnr</th>
+                            <th>Manufacturer</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="part in partList">
+                        <tr>
+                            <td>
+                                <input type="checkbox">
+                            </td>
+                            <td>{{part.partnr}}</td>
+                            <td>{{part.manufacturer}}</td>
+                            <td>{{part.description1}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
