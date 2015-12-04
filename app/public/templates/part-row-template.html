@@ -1,7 +1,14 @@
-<td>
-    <input type="checkbox">
-</td>
-<td>{{part.partnr}}</td>
-<td>{{part.manufacturer}}</td>
-<td>{{part.description1}}</td>
-<button>edit</button>
+<div ng-mouseenter="show = true" ng-mouseleave="show = false">
+	<div class="col-sm-5">
+		<h4>{{part.partnr}}</h4>
+		<h5>{{part.manufacturer}}</h5>
+		<p>{{part.description1}}</p>
+	</div>
+	<div class="col-sm-5">
+		<p>{{part.note}}</p>
+	</div>
+
+	<div class="col-sm-2">
+	<button class="btn btn-default bt-lg">edit</button>
+	</div>
+</div>
