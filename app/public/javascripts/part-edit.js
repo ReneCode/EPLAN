@@ -1,10 +1,10 @@
 
 app = angular.module('eplanApp');
 
-app.controller('PartEditController', function($scope, $http, $routeParams, eplanUtility) {
+app.controller('PartEditController', function($scope, $http, $stateParams, eplanUtility) {
   var URL_ROOT = eplanUtility.getApiHost();
   // default pastList is empty
-  var id = $routeParams.id;
+  var id = $stateParams.id;
 
 	$scope.part = { partnr: "hallo:" + id };
   getPart(id);

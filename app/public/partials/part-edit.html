@@ -1,18 +1,10 @@
 
 
-<ul class="nav nav-tabs">
-	<li class="active"><a ui-sref="main">Main</a></li>
-	<li><a ui-sref="technical">technical</a></li>
-</ul>
+<h3>EDIT {{part.partnr}}</h3>
 
-<div class="tab-content">
-	<div class="tab-pane active" id="main">
-		<h1>EDIT {{part.partnr}}</h1>
-		<h3>{{part.description1}}</h3>
-		<h3>{{part.note}}</h3>
-	</div>
-	<div class="tab-pane" id="technical">
-		<h3>technical</h3>
-		<p>{{part.manufacturer}}</p>
-		</div>
-</div>
+<uib-tabset>
+<uib-tab heading="common" ui-sref="edit.common"></uib-tab>
+<uib-tab heading="technical" ui-sref="edit.technical"></uib-tab>
+</uib-tabset>
+
+<div ui-view="editcontent"></div>

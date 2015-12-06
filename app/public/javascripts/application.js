@@ -1,4 +1,4 @@
-var eplanApp = angular.module('eplanApp', ['ngRoute']);
+var eplanApp = angular.module('eplanApp', ['ui.router', 'ui.bootstrap']);
 
 //
 // Service
@@ -32,6 +32,48 @@ eplanApp.directive('partRow', function() {
   }
 })
 
+
+eplanApp.config(function($stateProvider) {
+  $stateProvider
+    .state('index', {
+      URL: "",
+      views: {
+        "index": {
+          templateUrl: 'partials/part-list.html',
+          controller: 'PartListController'
+        }
+      }
+    })
+    .state('edit', {
+      url: "edit/:id",
+      views: {
+        "index": {
+          templateUrl: 'partials/part-edit.html',
+          controller: 'PartEditController'
+        }
+      }
+    })
+    .state('edit.technical', {
+      parent: 'edit',
+      views: {
+        "editcontent": {
+          template: '<h1>das ist {{part.description1}} technisch</h1>',
+        }
+      }
+    })
+    .state('edit.common', {
+      parent: 'edit',
+      views: {
+        "editcontent": {
+          template: '<h1>das ist {{part.note}}</h1>',
+
+        }
+      }
+    });
+
+});
+
+/*
 eplanApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider
     .when('/', {
@@ -43,8 +85,7 @@ eplanApp.config(['$routeProvider', function($routeProvider) {
       controller: 'PartEditController'
     });
 
-
   }
 ]);
 
-
+*/
