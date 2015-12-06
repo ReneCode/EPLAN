@@ -6,3 +6,11 @@ body {
 a {
   color: #00B7FF;
 }
+.part-row .controls {
+	opacity: 0.2;
+}
+
+.part-row > .controls:hover  {
+	opacity: 1.0;
+}
+

@@ -1,14 +1,14 @@
-<div ng-mouseenter="show = true" ng-mouseleave="show = false">
+<div class="part-row">
 	<div class="col-sm-5">
 		<h4>{{part.partnr}}</h4>
-		<h5>{{part.manufacturer}}</h5>
 		<p>{{part.description1}}</p>
 	</div>
 	<div class="col-sm-5">
+		<h5>{{part.manufacturer}}</h5>
 		<p>{{part.note}}</p>
 	</div>
 
-	<div class="col-sm-2">
-	<button class="btn btn-default bt-lg">edit</button>
+	<div class="col-sm-1 controls">
+	<a href="#edit?id={{part._id}}">Edit it</a>
 	</div>
 </div>

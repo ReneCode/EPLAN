@@ -1,41 +1,9 @@
-var eplanApp = angular.module('eplanApp', []);
-
-eplanApp.controller('MainController', function($scope, $http, utility) {
-  var URL_ROOT = utility.getApiHost();
-  // default pastList is empty
-	$scope.partList = {};
-  // get Parts without any filter
-  getParts();
-
-  $scope.searchParts = function() {
-  	var searchText = $scope.searchText;
-    getParts(searchText);
-  };
-
-  function getParts(searchText) {
-    $http.get(URL_ROOT + '/api/v1/part', {params:{q:searchText}} )
-      .then( 
-        // success
-        function(response) {
-          $scope.partList = response.data.data;
-        },
-        // error
-        function(response) {
-          console.log("errror >>");
-          console.log("data:", response.data);
-          console.log("status:", response.status);
-          console.log("headers:", response.headers);
-          console.log("config:", response.config);
-          console.log("statusText:", response.statusText);
-        }
-      ); 
-  }
-});
+var eplanApp = angular.module('eplanApp', ['ngRoute']);
 
 //
 // Service
 //
-eplanApp.service("utility", function($location) {
+eplanApp.service("eplanUtility", function($location) {
 
   return {
     getApiHost: function() {
@@ -55,7 +23,6 @@ eplanApp.service("utility", function($location) {
       return apiHost;
     }
   }
-
 });
 
 
@@ -64,3 +31,20 @@ eplanApp.directive('partRow', function() {
     templateUrl: 'templates/part-row-template.html'
   }
 })
+
+eplanApp.config(['$routeProvider', function($routeProvider) {
+  $routeProvider
+    .when('/', {
+      templateUrl: 'partials/part-list.html',
+      controller: 'PartListController'
+    })
+    .when("/edit", {
+      templateUrl: 'partials/part-edit.html',
+      controller: 'PartEditController'
+    });
+
+
+  }
+]);
+
+
