@@ -33,10 +33,18 @@ eplanApp.directive('partRow', function() {
 })
 
 
+eplanApp.run([ '$state', function($state) {
+  // start with state: index
+  $state.transitionTo('index');
+}
+
+]);
+
+
 eplanApp.config(function($stateProvider) {
   $stateProvider
     .state('index', {
-      URL: "",
+      url: "index",
       views: {
         "index": {
           templateUrl: 'partials/part-list.html',

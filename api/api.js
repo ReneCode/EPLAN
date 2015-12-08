@@ -9,7 +9,7 @@ module.exports = function(wagner) {
 	api.get('/part/:id', wagner.invoke( function(Part) {
 		return function(req, res) {
 			Part.findOne({_id:req.params.id}, function(err, data) {
-				console.dir(data);
+//				console.dir(data);
 				res.json({data:data});
 			});
 		};

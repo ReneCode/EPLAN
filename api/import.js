@@ -27,7 +27,7 @@ function pushValue(arr, val) {
 
 function mlValue(str) {
 	if (str) {
-		return importUtility.convertToObject(str);
+		return importUtility.convertEplanMultiLanguageStringToObject(str);
 	} else {
 		return null;
 	}
@@ -66,11 +66,8 @@ function importPart(ip, callback) {
 	});
 
 	console.log("Saving:" + np.partnr);
-	console.dir(np.note);
 	var newPart = new PartsModel(np);
 	newPart.save();
-	console.dir(newPart.note);
-	console.log("----------------")
 	callback();
 
 }

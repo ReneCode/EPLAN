@@ -3,7 +3,7 @@ var _ = require('underscore');
 
 module.exports = (function() {
 
-	function convertToObject(sIn) {
+	function convertEplanMultiLanguageStringToObject(sIn) {
 
 		// de_DE@Hydraulikschlauch;en_US@Hydraulic tube;
 
@@ -20,7 +20,7 @@ module.exports = (function() {
 	}
 
 	return {
-		convertToObject: convertToObject
+		convertEplanMultiLanguageStringToObject: convertEplanMultiLanguageStringToObject
 	}
 })();
 
