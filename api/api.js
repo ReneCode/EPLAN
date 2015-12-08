@@ -2,6 +2,16 @@
 var bodyparser = require('body-parser');
 var express = require('express');
 
+
+/*
+	REST interface
+
+	POST  	create a new part
+	GET     get all/some parts (with filter)
+	PUT     update a part
+	DEL     delete (remove) a part
+*/
+
 module.exports = function(wagner) {
 	var api = express.Router();
 	api.use(bodyparser.json());
@@ -54,7 +64,7 @@ module.exports = function(wagner) {
  		};
  	}));
 
-
+ 	// update one part
  	api.put('/part/:id', wagner.invoke(function(Part) {
  		return function(req, res) {
  			var updatePart = req.body;
