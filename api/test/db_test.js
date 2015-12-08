@@ -6,6 +6,7 @@ describe('Database', function() {
 
 
 	before(function() {
+		require('../config.js')(wagner);
 		require('../schema/models.js')(wagner);
 	});
 
@@ -43,6 +44,22 @@ describe('Database', function() {
 		});
 
 
+		it('create and find part', function(done) {
+			var tempPart = { partnr: '4712', manufacturer:'4712-siemens'};
+			var p1 = new PartModel(tempPart);
+			p1.save();
+			assert.equal(p1.partnr, '4712');
+			assert.notEqual(p1._id, undefined);
+			PartModel.find({_id: p1._id}, function(err, foundData) {
+				assert.equal(err, undefined);
+				assert.equal(foundData.length, 1);
+				assert.equal(foundData[0].partnr, '4712');
+				assert.notEqual(foundData[0]._id, undefined);
+				done();
+			});
+		});
+
+
 		it ('count created parts', function(done) {
 			var p1 = { partnr: 'abc', manufacturer:'ABB'};
 			var p2 = { partnr: 'xyz', manufacturer:'siemens'};
@@ -69,8 +86,26 @@ describe('Database', function() {
 					done();
 				});
 			});
-
 		});
+
+		it ('create multi-language properties', function(done) {
+			var p1 = { partnr: 'mlPart', note: {de_DE:"Hallo", en_US:"hello"}, 
+						description: [ 
+								{de_DE:"dd1", en_US:"de1"},
+								{de_DE:"dd2", en_US:"de2"},
+								{de_DE:"dd3", en_US:"de3"} ] };
+			newPart = new PartModel(p1);
+			newPart.save();
+			var id = newPart._id;
+			PartModel.find({_id:id}, function(err, foundData) {
+				assert.equal(foundData[0].partnr, "mlPart"); 
+				assert.equal(foundData[0].note.de_DE, "Hallo"); 
+				assert.equal(foundData[0].description[0].de_DE, "dd1"); 
+				assert.equal(foundData[0].description[2].en_US, "de3"); 
+				done();  
+			});
+		});
+
 
 	});
 });
