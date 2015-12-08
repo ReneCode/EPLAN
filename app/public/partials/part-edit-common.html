@@ -1,14 +1,15 @@
 
-<form ng-submit="submit()" role="form" class="form-horizontal">
+<form role="form" class="form-horizontal">
 	<div class="row">
 		&nbsp;
 	</div>
 
+
 	<div class="form-group">
-		<label class="control-label col-sm-2" for="partnr">partnr</label>
+		<label class="control-label col-sm-2" for="partnr">Partnr</label>
 		<div class="col-sm-10">
 			<input type="text" class="form-control" id="partnr" 
-				value="{{part.partnr}}">
+				ng-model="part.partnr">
 		</div>
 	</div>
 
@@ -16,7 +17,7 @@
 		<label class="control-label col-sm-2" for="description">Description</label>
 		<div class="col-sm-10">
 			<input type="text" class="form-control" id="description" 
-				value="{{part.description[0].de_DE}}">
+				ng-model="part.description[0].de_DE">
 		</div>
 	</div>
 
@@ -24,13 +25,13 @@
 		<label class="control-label col-sm-2" for="note">Note</label>
 		<div class="col-sm-10">
 			<input type="text" class="form-control" id="note" 
-				value="{{part.note.de_DE}}">
+				ng-model="part.note.de_DE">
 		</div>
 	</div>
 
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-primary">Save</button>
+			<button ng-click="submit()" type="button" class="btn btn-primary">Save</button>
 		</div>
 	</div>
 </form>

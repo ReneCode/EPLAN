@@ -31,7 +31,12 @@ app.controller('PartEditController', function($scope, $http, $state, $stateParam
 
   $scope.submit = function() {
     // update the part
-    console.log("submit part");
+    $http.put(URL_ROOT + '/api/v1/part/' + $scope.part._id, $scope.part)
+      .then(
+        // success
+        function(response) {
+        }
+      );
   }
 
 });
