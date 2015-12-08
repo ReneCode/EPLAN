@@ -66,10 +66,19 @@ module.exports = function(wagner) {
  				}
  			});
  		};
-
  	}));
 
-
+ 	api.delete('/part/:id', wagner.invoke(function(Part) {
+ 		return function(req, res) {
+ 			Part.remove({_id:req.params.id}, function(err, result) {
+ 				if (err) {
+ 					res.send(err);
+ 				} else {
+ 					res.send({data: result});
+ 				}
+ 			});
+ 		}
+ 	}));
 
 	return api;
 };

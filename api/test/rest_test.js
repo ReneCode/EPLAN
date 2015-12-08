@@ -176,8 +176,32 @@ describe('REST Server', function() {
 
 			});
 		});
+	});
 
 
+	it('can delete a part', function(done) {
+		// create new part
+		var tmpPart = {partnr:'deletePart', typenr:"typenr", note: { de_DE:"notiz"} };
+		p1 = new PartModel(tmpPart);
+		p1.save(); 
+		var id = p1._id;
+
+		// delete that part
+		var url = URL_ROOT + '/api/v1/part/' + id;
+		// REST: delete = delete-verb
+		superagent.del(url)
+					.end(function(err, res) {
+			// check if the new part was deleted
+			assert.equal(res.body.data.ok, 1); 
+			assert.equal(res.body.data.n, 1); 
+
+			PartModel.findOne({_id:id}, function(err, result) {
+				assert.equal(err, null);
+				// no part should be found
+				assert.equal(result, null);
+				done();
+			});
+		});
 	});
 
 });
