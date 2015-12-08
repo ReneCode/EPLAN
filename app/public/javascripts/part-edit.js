@@ -1,14 +1,14 @@
 
 app = angular.module('eplanApp');
 
-app.controller('PartEditController', function($scope, $http, $stateParams, eplanUtility) {
+app.controller('PartEditController', function($scope, $http, $state, $stateParams, eplanUtility) {
   var URL_ROOT = eplanUtility.getApiHost();
   // default pastList is empty
   var id = $stateParams.id;
 
-	$scope.part = { partnr: "hallo:" + id };
   getPart(id);
-
+  // switch to the common-tab
+  $state.go('edit.common');
 
   function getPart(id) {
     $http.get(URL_ROOT + '/api/v1/part/' + id)
@@ -28,4 +28,10 @@ app.controller('PartEditController', function($scope, $http, $stateParams, eplan
         }
       ); 
   }
+
+  $scope.submit = function() {
+    // update the part
+    console.log("submit part");
+  }
+
 });

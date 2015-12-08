@@ -1,8 +1,6 @@
 
-var asssert = require('assert');
-
-var app = require('../server');
 var assert = require('assert');
+
 var wagner = require('wagner-core');
 
 
@@ -10,19 +8,12 @@ describe('Config', function() {
 	var cfg;
 
 	before(function(done) {
-		app()
+		// initialize the 'Config' service
+		require('../config.js')(wagner);
 		cfg = wagner.invoke(function(config) {
 			return config;
 		});
 		done();
-	});
-
-	after(function(done) {
-		wagner.invoke(function(db) {
-			db.connection.close(function() {
-				done();
-			});
-		});
 	});
 
 

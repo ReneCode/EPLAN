@@ -6,6 +6,7 @@ module.exports = function(wagner) {
 	var api = express.Router();
 	api.use(bodyparser.json());
 
+	// get single part
 	api.get('/part/:id', wagner.invoke( function(Part) {
 		return function(req, res) {
 			Part.findOne({_id:req.params.id}, function(err, data) {
@@ -15,6 +16,7 @@ module.exports = function(wagner) {
 		};
 	}));
  
+ 	// create a part
  	api.post('/part', wagner.invoke(function(Part) {
 		return function(req, res) {
 //			console.log("post:", req.body);
@@ -31,6 +33,7 @@ module.exports = function(wagner) {
 		};
 	}));
 
+ 	// query parts - get multiple parts
  	api.get('/part', wagner.invoke(function(Part) {
  		return function(req, res) {
  			skip = req.query.skip || 0;
@@ -50,6 +53,23 @@ module.exports = function(wagner) {
  			});
  		};
  	}));
+
+
+ 	api.put('/part/:id', wagner.invoke(function(Part) {
+ 		return function(req, res) {
+ 			var updatePart = req.body;
+ 			Part.update({_id:req.params.id}, updatePart, function(err, result) {
+ 				if (err) {
+ 					res.send(err);
+ 				} else {
+ 					res.send({data: result});
+ 				}
+ 			});
+ 		};
+
+ 	}));
+
+
 
 	return api;
 };

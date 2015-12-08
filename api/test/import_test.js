@@ -1,5 +1,6 @@
 
 var assert = require('assert');
+
 var importUtility = require('../importUtility');
 
 describe('Import Utility', function() {
@@ -10,6 +11,6 @@ describe('Import Utility', function() {
 		var oOut = importUtility.convertEplanMultiLanguageStringToObject(sIn);
 		assert.equal(oOut.de_DE, "Hydraulikschlauch");
 		assert.equal(oOut.es_ES, "Manguera hidráulica");
-
 	});
+
 });

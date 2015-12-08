@@ -65,7 +65,7 @@ eplanApp.config(function($stateProvider) {
       parent: 'edit',
       views: {
         "editcontent": {
-          template: '<h1>das ist {{part.description1}} technisch</h1>',
+          templateUrl: 'partials/part-edit-technical.html',
         }
       }
     })
@@ -73,7 +73,7 @@ eplanApp.config(function($stateProvider) {
       parent: 'edit',
       views: {
         "editcontent": {
-          template: '<h1>das ist {{part.note}}</h1>',
+          templateUrl: 'partials/part-edit-common.html',
 
         }
       }

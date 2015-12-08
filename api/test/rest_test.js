@@ -1,5 +1,7 @@
-var app = require('../server');
+
 var assert = require('assert');
+
+var app = require('../server');
 var wagner = require('wagner-core');
 var superagent = require('superagent');
 
@@ -8,9 +10,13 @@ var URL_ROOT = 'http://localhost:3010';
 
 describe('REST Server', function() {
 	var server;
+	var PartModel;
 
 	before(function(done) {
 		server = app().listen(3010);
+		PartModel = wagner.invoke(function(Part) {
+			return Part;
+		});
 		done();
 	});
 
@@ -22,7 +28,7 @@ describe('REST Server', function() {
 	it('can be called', function(done) {
 		var url = URL_ROOT + '/api/v1/part';
 		superagent.get(url, function(err, res) {
-//			assert.ifError(err);
+			assert.ifError(err);
 			done();
 		});
 	});
@@ -36,6 +42,10 @@ describe('REST Server', function() {
 							.send({"partnr":name})
 							.end(function(err, res) {
 			assert.equal(res.body.data.partnr, name); 
+			var id = res.body.data._id;
+			assert.notEqual(id, null); 
+			assert.equal(typeof(id), 'string'); 
+			assert(id.length > 10);
 			done();
 		});
 	});
@@ -114,9 +124,6 @@ describe('REST Server', function() {
 	
 
 	it('get skped / limit part data', function(done) {
-		PartModel = wagner.invoke(function(Part) {
-			return Part;
-		});
 		PartModel.remove({}, function(err) {
 
 			var p1 = { partnr: 'ab5-part', manufacturer:'m13'};
@@ -142,6 +149,37 @@ describe('REST Server', function() {
 			});
 		});
 	});
+
+	it('can update part data', function(done) {
+		var tmpPart = {partnr:'update', typenr:"typenr", note: { de_DE:"notiz"} };
+		p1 = new PartModel(tmpPart);
+		p1.save(); 
+		var id = p1._id;
+
+		// change typenr
+		var update = { typenr: "newTypenr", partnr:"newPartNr" };
+		var url = URL_ROOT + '/api/v1/part/' + id;
+		// REST: update = put-verb
+		superagent.put(url)
+					.send(update)
+					.end(function(err, res) {
+			// check if the new part was updated
+			assert.equal(res.body.data.ok, 1); 
+			assert.equal(res.body.data.n, 1); 
+
+			PartModel.findOne({_id:id}, function(err, result) {
+				// changed typenr
+				assert.equal(result.typenr, "newTypenr"); 
+				assert.equal(result.partnr, "newPartNr"); 
+				assert.equal(result.note.de_DE, "notiz"); 
+				done();
+
+			});
+		});
+
+
+	});
+
 });
 
 
