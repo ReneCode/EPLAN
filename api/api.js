@@ -52,13 +52,15 @@ module.exports = function(wagner) {
  			q = req.query.q; 
  			var filter = {};
  			if (q) {
- 				var partfilter = {partnr: { $regex: '.*' + q + '.*'} };
- 				var descfilter = {description1: { $regex: '.*' + q + '.*'} };
- 				filter = { $or: [partfilter, descfilter] } 
+ 				// create /searchtext/i
+ 				// regular expression, case insensitive search
+ 				var regex = new RegExp([q].join(""),"i");
+ 				var partfilter = {partnr: regex };
+ 				var descfilter = { 'description[0].de_DE': regex };
+ 				var notefilter = { 'note.de_DE': regex };
+ 				filter = { $or: [partfilter, descfilter, notefilter] };
  			}
-// 			console.log("skip:", skip, " limit:", limit, " query:", JSON.stringify(filter) );
  			Part.find(filter).sort('partnr').skip(skip).limit(limit).exec(function(err, data) {
-// 				console.log(data);
  				res.json({data:data});
  			});
  		};

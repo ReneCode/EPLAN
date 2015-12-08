@@ -113,10 +113,22 @@ describe('REST Server', function() {
 				assert.equal(res.body.data[1].manufacturer, 'm14');
 				done();
 			});
-			
 		});
 	});
 	
+
+	it('get case insensitive filted part data / REST: GET', function(done) {
+		var p1 = new PartModel({ partnr: 'ABcd-part', note: { de_DE: 'great Motor'} });
+		p1.save();
+		// query on "moto"   should find "Motor"
+		var search = "mot";
+		var url = URL_ROOT + '/api/v1/part?q=' + search;
+		superagent.get(url, function(err, res) {
+			assert.equal(res.body.data.length, 1); 
+			assert.equal(res.body.data[0].partnr, 'ABcd-part');
+			done();
+		});
+	});
 
 	it('get skped, limit part data', function(done) {
 		var p1 = { partnr: 'ab5-part', manufacturer:'m13'};
