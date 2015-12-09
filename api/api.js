@@ -55,8 +55,8 @@ module.exports = function(wagner) {
  				// create /searchtext/i
  				// regular expression, case insensitive search
  				var regex = new RegExp([q].join(""),"i");
- 				var partfilter = {partnr: regex };
- 				var descfilter = { 'description[0].de_DE': regex };
+ 				var partfilter = {partnr: regex }; 
+ 				var descfilter = { 'description.0.de_DE': regex };
  				var notefilter = { 'note.de_DE': regex };
  				filter = { $or: [partfilter, descfilter, notefilter] };
  			}

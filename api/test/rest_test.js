@@ -130,6 +130,28 @@ describe('REST Server', function() {
 		});
 	});
 
+
+	it('get case insensitive filted part data / REST: GET', function(done) {
+		var p1 = { partnr: 'mlPart', note: {de_DE:"Hallo", en_US:"hello"}, 
+						description: [ 
+								{de_DE:"MotorA", en_US:"de1"},
+								{de_DE:"dd2", en_US:"de2"},
+								{de_DE:"dd3", en_US:"de3"} ] };
+		newPart = new PartModel(p1);
+		newPart.save();
+		// query on "moto"   should find "Motor"
+		var search = "mot";
+		var url = URL_ROOT + '/api/v1/part?q=' + search;
+		superagent.get(url, function(err, res) {
+			assert.equal(res.body.data.length, 1); 
+			assert.equal(res.body.data[0].partnr, 'mlPart');
+			done();
+		});
+	});
+
+
+
+
 	it('get skped, limit part data', function(done) {
 		var p1 = { partnr: 'ab5-part', manufacturer:'m13'};
 		var p2 = { partnr: 'ab4-part', manufacturer:'m13'};
