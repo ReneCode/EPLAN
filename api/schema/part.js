@@ -10,13 +10,14 @@ module.exports = (function() {
 		productgroup: { type: Number },
 		productsubgroup: { type: Number },
 		parttype: { type: Number },
+		ordernr: { type: String },
 		typenr: { type: String },
 		created_at: { type: Date },
 		updated_at: { type: Date },
 		manufacturer: { type: String },
 		description: Array,
 		note: {},
-		data: Array
+		data: {}
 	});
 	return partSchema;
 })();

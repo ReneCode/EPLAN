@@ -42,6 +42,7 @@ function importPart(ip, callback) {
 		producttopgroup: ip._P_ARTICLE_PRODUCTTOPGROUP,
 		productgroup: ip._P_ARTICLE_PRODUCTGROUP,
 		productsubgroup: ip._P_ARTICLE_PRODUCTSUBGROUP,
+		ordernr: ip._P_ARTICLE_ORDERNR,
 		description: [],
 		note: mlValue(ip._P_ARTICLE_NOTE),
 		manufacturer: ip._P_ARTICLE_MANUFACTURER,
@@ -51,6 +52,8 @@ function importPart(ip, callback) {
 			width: ip._P_ARTICLE_WIDTH,
 			depth: ip._P_ARTICLE_DEPTH,
 			quantityunit: mlValue(ip._P_ARTICLE_QUANTITYUNIT),
+			connectioncrosssection: mlValue(ip.variant._P_ARTICLE_CONNECTIONCROSSSECTION),
+			characteristics: ip.variant._P_ARTICLE_CHARACTERISTICS,
 			attribute: []
 		}
 	};

@@ -35,9 +35,12 @@ describe('Database', function() {
 		});
 
 		it('create part', function(done) {
-			var tempPart = { partnr: '4711', manufacturer:'siemens'};
+			var tempPart = { partnr: '4711', manufacturer:'siemens', 
+						ordernr:"4634", data: {characteristics:'220 V'} };
 			var p1 = PartModel.create(tempPart, function(err, newPart) {
 					assert.equal(newPart.partnr, '4711');
+					assert.equal(newPart.ordernr, '4634');
+					assert.equal(newPart.data.characteristics, '220 V');
 					assert.notEqual(newPart._id, undefined);
 					done();
 				});
