@@ -1,10 +1,12 @@
-
 ## experimental EPLAN application 
 ### config
+
 please set the configuration in:
 
-    config/config.json
- 
+config/config.json
+
+// configuration for the mongo-database 
+// 
     {  
        "mongodb":{  
           "hostname":"localhost",
