@@ -109,6 +109,31 @@ describe('Database', function() {
 			});
 		});
 
+		it ('update mixed part property', function(done) {
+			var p1 = { partnr: 'amlPart', 
+						note: {de_DE:"Hallo", en_US:"hello"}, 
+						data: { propA: 47,
+										propB: "ABC" } };
+			newPart = new PartModel(p1);
+			newPart.save();
+			var id = newPart._id;
+			newPart.data.propB = "XYZ";
+			PartModel.update({_id:id}, newPart, function(err, result) {
+				// part is updated
+				console.log(err);
+				assert.equal(result.ok, 1);
+				// now get the modified part
+				PartModel.find({_id:id}, function(err, foundData) {
+					// old Data should be also be there
+					assert.equal(foundData[0].partnr, "amlPart"); 
+					assert.equal(foundData[0].data.propA, 47); 
+					assert.equal(foundData[0].data.propB, "XYZ"); 
+					done();  
+
+				});
+			});
+		});
+
 
 	});
 });

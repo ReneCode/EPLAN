@@ -47,9 +47,12 @@ module.exports = function(wagner) {
  	api.get('/part', wagner.invoke(function(Part) {
  		return function(req, res) {
  			skip = req.query.skip || 0;
- 			limit = req.query.limit || 100;
+ 			limit = req.query.limit || 50;
 
+ 			// q = query-text
  			q = req.query.q; 
+ 			// f = filter
+ 			f = req.query.f;
  			var filter = {};
  			if (q) {
  				// create /searchtext/i
@@ -60,6 +63,15 @@ module.exports = function(wagner) {
  				var notefilter = { 'note.de_DE': regex };
  				filter = { $or: [partfilter, descfilter, notefilter] };
  			}
+ 			
+ 			if (f) {
+ 				var fText = {};
+ 				aTok = f.split(':');
+ 				if (aTok.length == 2) {
+					fText[aTok[0]] = aTok[1];
+					filter = { $and: [ filter, fText ] };
+ 				}
+ 			} 
  			Part.find(filter).sort('partnr').skip(skip).limit(limit).exec(function(err, data) {
  				res.json({data:data});
  			});

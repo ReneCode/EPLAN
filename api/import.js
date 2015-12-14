@@ -9,14 +9,15 @@ require('./schema/models.js')(wagner);
 
 PartsModel = wagner.invoke(function(Part) {
 	return Part;
-})
+});
 
-//var fileData = require('../try/parts.json');
+ProductgroupModel = wagner.invoke(function(Productgroup) {
+	return Productgroup;
+});
+
+
 var fileData = require('../try/pm-data.json');
-
-var allParts = collectParts(fileData);
-//console.log(JSON.stringify(allParts,undefined,1));
-//saveParts(allParts);
+collectParts(fileData);
 
 
 function pushValue(arr, val) {
@@ -68,7 +69,7 @@ function importPart(ip, callback) {
 		}
 	});
 
-	console.log("Saving:" + np.partnr);
+	console.log(np.partnr);
 	var newPart = new PartsModel(np);
 	newPart.save();
 	callback();
@@ -76,22 +77,10 @@ function importPart(ip, callback) {
 }
 
 function collectParts(inData) {
-	var parts = [];
-
 	async.each(inData.partsmanagement.part, importPart, function(err) {
 		console.log("finished collectParts");
 		closeConnection();
 	});
-
-	console.log("finish");
-		/*
-
-
-	//	parts.push(np);
-	});
-*/
-
-//	return parts;
 }
 
 

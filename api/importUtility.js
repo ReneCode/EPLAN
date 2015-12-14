@@ -22,5 +22,7 @@ module.exports = (function() {
 	return {
 		convertEplanMultiLanguageStringToObject: convertEplanMultiLanguageStringToObject
 	}
+
+
 })();
 

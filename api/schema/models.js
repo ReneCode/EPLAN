@@ -23,9 +23,11 @@ module.exports = function(wagner) {
 	});
 
 	var Part = mongoose.model('Part', require('./part.js'), 'parts');
+	var Productgroup = mongoose.model('Productgroups', require('./productgroup.js'), 'productgroups');
 
 	var models = {
-		Part: Part
+		Part: Part,
+		Productgroup: Productgroup
 	};
 
 	// register models

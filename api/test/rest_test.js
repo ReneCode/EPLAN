@@ -149,8 +149,29 @@ describe('REST Server', function() {
 		});
 	});
 
+	it('filter by f-parameter', function(done) {
+		var p1 = { partnr: 'ab5-part', manufacturer:'m13'};
+		var p2 = { partnr: 'ab4-part', manufacturer:'m13'};
+		var p3 = { partnr: 'ab3-part', manufacturer:'m14'};
+		var p4 = { partnr: 'ab2-part', manufacturer:'m14'};
+		var p5 = { partnr: 'ab1-part', manufacturer:'m15'};
+		var p6 = { partnr: 'ab6-part', manufacturer:'m15'};
+		var p7 = { partnr: 'aa7-part', manufacturer:'m16'};
+		var p8 = { partnr: 'aa8-part', manufacturer:'m14'};
 
-
+		PartModel.create([p1,p2,p3,p4,p5,p6,p7,p8], function(err, newParts) {
+			var filter = "manufacturer:m14"
+			var url = URL_ROOT + '/api/v1/part?f=' + filter;
+			superagent.get(url, function(err, res) {
+				assert.equal(res.body.data.length, 3); 
+				assert.equal(res.body.data[0].partnr, 'aa8-part');
+				assert.equal(res.body.data[1].partnr, 'ab2-part');
+				assert.equal(res.body.data[2].partnr, 'ab3-part');
+				done();
+			});
+			
+		});
+	});
 
 	it('get skped, limit part data', function(done) {
 		var p1 = { partnr: 'ab5-part', manufacturer:'m13'};
