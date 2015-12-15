@@ -11,9 +11,6 @@ PartsModel = wagner.invoke(function(Part) {
 	return Part;
 });
 
-ProductgroupModel = wagner.invoke(function(Productgroup) {
-	return Productgroup;
-});
 
 
 var fileData = require('../try/pm-data.json');
