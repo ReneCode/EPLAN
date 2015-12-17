@@ -97,7 +97,7 @@ describe('Database', function() {
 								{de_DE:"dd1", en_US:"de1"},
 								{de_DE:"dd2", en_US:"de2"},
 								{de_DE:"dd3", en_US:"de3"} ] };
-			newPart = new PartModel(p1);
+			var newPart = new PartModel(p1);
 			newPart.save();
 			var id = newPart._id;
 			PartModel.find({_id:id}, function(err, foundData) {
@@ -111,21 +111,24 @@ describe('Database', function() {
 
 		it ('update mixed part property', function(done) {
 			var p1 = { partnr: 'amlPart', 
+						ordernr: 4711,
 						note: {de_DE:"Hallo", en_US:"hello"}, 
 						data: { propA: 47,
-										propB: "ABC" } };
-			newPart = new PartModel(p1);
+								propB: "ABC" } };
+			var newPart = new PartModel(p1);
 			newPart.save();
 			var id = newPart._id;
+			// change data.property
 			newPart.data.propB = "XYZ";
+			newPart.ordernr = 775544;
 			PartModel.update({_id:id}, newPart, function(err, result) {
 				// part is updated
-				console.log(err);
 				assert.equal(result.ok, 1);
 				// now get the modified part
 				PartModel.find({_id:id}, function(err, foundData) {
 					// old Data should be also be there
 					assert.equal(foundData[0].partnr, "amlPart"); 
+					assert.equal(foundData[0].ordernr, 775544); 
 					assert.equal(foundData[0].data.propA, 47); 
 					assert.equal(foundData[0].data.propB, "XYZ"); 
 					done();  
