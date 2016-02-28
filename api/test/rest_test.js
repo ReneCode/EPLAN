@@ -8,7 +8,7 @@ var superagent = require('superagent');
 var URL_ROOT = 'http://localhost:3010';
 
 
-describe('Part REST Server', function() {
+xdescribe('Part REST Server', function() {
 	var server;
 	var PartModel;
 

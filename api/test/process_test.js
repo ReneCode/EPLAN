@@ -38,47 +38,83 @@ describe('Process REST Server', function() {
 		});
 	});
 
-/*
 	it('create process / REST: POST', function(done) {
-		var url = URL_ROOT + '/';
+		var url = URL_ROOT;
 		var name = "abcxyz";
 		superagent.post(url)
-				.send({id:4711, date: new Date() })
+				.send({id:4711, date: new Date(), user_name:name })
 				.end(function(err, res) {
 			assert.equal(res.body.id, 4711); 
-			var id = res.body.data._id;
+			var id = res.body._id;
 			assert.notEqual(id, null); 
 			assert.equal(typeof(id), 'string'); 
 			assert(id.length > 10);
 
 			// find that created part in the database
-			PartModel.findOne({_id:id}, function(err, result) {
+			ProcessModel.findOne({_id:id}, function(err, result) {
 				// changed typenr
-				assert.equal(result.partnr, name); 
+				assert.equal(result.user_name, name); 
+				done();
+			});
+		});
+	});
+
+	it('can update process / REST: PUT', function(done) {
+		var tmp = {id:4711, startdate: new Date(), user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			assert.equal(data.id, 4711);
+			assert.equal(data.user_name, "paul");
+			var id = data._id;
+
+			var url = URL_ROOT + id;
+			superagent.put(url)
+					.send({_id:id, user_name:"martha" })
+					.end(function(err, result) {
+				assert.equal(result.body.ok, 1); 
 				done();
 			});
 		});
 	});
 
 
-	it('get one part data', function(done) {
-		// create part
-		var name = "veryNewPart";
-		var part = new PartModel({partnr:name, manufacturer:"sie"});
-		part.save();
-		// id of that part
-		var createdId = part._id;
-
-		url = URL_ROOT + '/api/v1/part/' + createdId;
-		superagent.get(url, function(err, res) {
-			var part = res.body.data;
-			assert.equal(part.partnr, name);
-			assert.equal(part._id, createdId);
-			assert.equal(part.manufacturer, "sie");
-			done();
+	it('get many process data', function(done) {
+		var dt = new Date(2015,2,16,20,44);
+		var tmp = {id:4711, start_date: dt, user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			// that document is 1 minute older
+			dt = new Date(2015,2,16,20,42);
+			tmp = {id:4712, start_date: dt, duration:5522, user_name:"lea" };
+			ProcessModel.create(tmp, function(err, data) {
+				var url = URL_ROOT;
+				superagent.get(url, function(err, result) {
+					assert.equal(result.body.length, 2); 
+					assert.equal(result.body[0].duration, 5522); 
+					assert.equal(result.body[0].user_name, "lea"); 
+					assert.equal(result.body[1].user_name, "paul"); 
+					done();
+				});
+			});
 		});
 	});		
 
+
+	it('get one process data', function(done) {
+		var tmp = {id:4711, start_date: new Date(), user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			assert.equal(data.id, 4711);
+			assert.equal(data.user_name, "paul");
+			var id = data._id;
+
+			var url = URL_ROOT + id;
+			superagent.get(url, function(err, result) {
+				assert.equal(result.body.user_name, "paul"); 
+				done();
+			});
+		});
+	});		
+
+
+/*
 	it('get all part data', function(done) {
 		var p1 = { partnr: 'lap-part', manufacturer:'lap'};
 		var p2 = { partnr: 'abb-part', manufacturer:'abb'};
@@ -199,18 +235,6 @@ describe('Process REST Server', function() {
 
 
 
-	it('can update process / REST: PUT', function(done) {
-		var tmp = {id:4711, startdate: new Date(), user_name:"paul" };
-		ProcessModel.create(tmp, function(err, data) {
-			assert.equal(data.id, 4711);
-			var id = data._id;
-
-			var url = URL_ROOT + id;
-
-			done();
-
-		});
-	});
 
 /*		// change typenr
 		var update = { typenr: "newTypenr", partnr:"newPartNr" };

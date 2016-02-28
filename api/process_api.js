@@ -28,6 +28,8 @@ module.exports = function(wagner) {
  	api.post('/', wagner.invoke(function(Process) {
 		return function(req, res) {
 			var p = req.body;
+			// remove _id - it will get a new _id from mongo
+			delete p._id;
 			var process = Process.create(p, function(err, data) {
 				if (err) {
 					res.send(err);
@@ -38,7 +40,7 @@ module.exports = function(wagner) {
 		};
 	}));
 
- 	// query parts - get multiple parts
+ 	// query process - get multiple parts
  	api.get('/', wagner.invoke(function(Process) {
  		return function(req, res) {
  			skip = req.query.skip || 0;
@@ -56,7 +58,7 @@ module.exports = function(wagner) {
 					filter = { $and: [ filter, fText ] };
  				}
  			} 
- 			Process.find(filter).sort('start').skip(skip).limit(limit).exec(function(err, data) {
+ 			Process.find(filter).sort('start_date').skip(skip).limit(limit).exec(function(err, data) {
  				res.json(data);
  			});
  		};
@@ -66,11 +68,11 @@ module.exports = function(wagner) {
  	api.put('/:id', wagner.invoke(function(Process) {
  		return function(req, res) {
  			var updateProcess = req.body;
- 			Process.update({_id:req.params.id}, updateProcess, function(err, result) {
+ 			Process.update({_id:req.params._id}, updateProcess, function(err, result) {
  				if (err) {
  					res.send(err);
  				} else {
- 					res.send(retult);
+ 					res.send(result);
  				}
  			});
  		};
@@ -78,7 +80,7 @@ module.exports = function(wagner) {
 
  	api.delete('/:id', wagner.invoke(function(Process) {
  		return function(req, res) {
- 			Process.remove({_id:req.params.id}, function(err, result) {
+ 			Process.remove({_id:req.params._id}, function(err, result) {
  				if (err) {
  					res.send(err);
  				} else {
