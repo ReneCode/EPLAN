@@ -60,7 +60,7 @@ describe('Process REST Server', function() {
 	});
 
 	it('can update process / REST: PUT', function(done) {
-		var tmp = {id:4711, startdate: new Date(), user_name:"paul" };
+		var tmp = {id:4711, start_at: new Date(), user_name:"paul" };
 		ProcessModel.create(tmp, function(err, data) {
 			assert.equal(data.id, 4711);
 			assert.equal(data.user_name, "paul");
@@ -79,11 +79,11 @@ describe('Process REST Server', function() {
 
 	it('get many process data', function(done) {
 		var dt = new Date(2015,2,16,20,44);
-		var tmp = {id:4711, start_date: dt, user_name:"paul" };
+		var tmp = {id:4711, title:"Title-A", machine_name:"mach-name", start_at: dt, user_name:"paul" };
 		ProcessModel.create(tmp, function(err, data) {
 			// that document is 1 minute older
-			dt = new Date(2015,2,16,20,42);
-			tmp = {id:4712, start_date: dt, duration:5522, user_name:"lea" };
+			dt = new Date(2015,2,16,20,40);
+			tmp = {id:4712, start_at: dt, duration:5522, user_name:"lea" };
 			ProcessModel.create(tmp, function(err, data) {
 				var url = URL_ROOT;
 				superagent.get(url, function(err, result) {
@@ -99,7 +99,7 @@ describe('Process REST Server', function() {
 
 
 	it('get one process data', function(done) {
-		var tmp = {id:4711, start_date: new Date(), user_name:"paul" };
+		var tmp = {id:4711, start_at: new Date(), user_name:"paul" };
 		ProcessModel.create(tmp, function(err, data) {
 			assert.equal(data.id, 4711);
 			assert.equal(data.user_name, "paul");
@@ -109,6 +109,28 @@ describe('Process REST Server', function() {
 			superagent.get(url, function(err, result) {
 				assert.equal(result.body.user_name, "paul"); 
 				done();
+			});
+		});
+	});		
+
+	it('delete one process process', function(done) {
+		var tmp = {id:4711, user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			var id = data._id;
+			tmp = {id:4712, duration:5522, user_name:"lea" };
+			ProcessModel.create(tmp, function(err, data) {
+				var url = URL_ROOT + id;
+				superagent.del(url, function(err, result) {
+					assert.equal(result.body.ok, 1); 
+					// get once more - (without the deleted document)
+					var url = URL_ROOT;
+					superagent.get(url, function(err, result) {
+						assert.equal(result.body.length, 1); 
+						assert.equal(result.body[0].duration, 5522); 
+						assert.equal(result.body[0].user_name, "lea"); 
+						done();
+					});
+				});
 			});
 		});
 	});		

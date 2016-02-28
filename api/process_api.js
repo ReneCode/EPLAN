@@ -58,7 +58,7 @@ module.exports = function(wagner) {
 					filter = { $and: [ filter, fText ] };
  				}
  			} 
- 			Process.find(filter).sort('start_date').skip(skip).limit(limit).exec(function(err, data) {
+ 			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
  				res.json(data);
  			});
  		};
@@ -68,7 +68,7 @@ module.exports = function(wagner) {
  	api.put('/:id', wagner.invoke(function(Process) {
  		return function(req, res) {
  			var updateProcess = req.body;
- 			Process.update({_id:req.params._id}, updateProcess, function(err, result) {
+ 			Process.update({_id:req.params.id}, updateProcess, function(err, result) {
  				if (err) {
  					res.send(err);
  				} else {
@@ -80,7 +80,7 @@ module.exports = function(wagner) {
 
  	api.delete('/:id', wagner.invoke(function(Process) {
  		return function(req, res) {
- 			Process.remove({_id:req.params._id}, function(err, result) {
+ 			Process.remove({_id:req.params.id}, function(err, result) {
  				if (err) {
  					res.send(err);
  				} else {

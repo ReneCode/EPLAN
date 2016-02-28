@@ -7,7 +7,7 @@ module.exports = (function() {
 		machine_name: { type: String },
 		process_name: { type: String },
 		user_name: { type: String },
-		start_date: { type: Date },
+		start_at: { type: Date },
 		duration: { type: Number }
 	});
 	return processSchema;
