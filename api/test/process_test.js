@@ -5,23 +5,23 @@ var app = require('../server');
 var wagner = require('wagner-core');
 var superagent = require('superagent');
 
-var URL_ROOT = 'http://localhost:3010';
+var URL_ROOT = 'http://localhost:3010/process/';
 
 
-describe('Part REST Server', function() {
+describe('Process REST Server', function() {
 	var server;
-	var PartModel;
+	var ProcessModel;
 
 	before(function(done) {
 		server = app().listen(3010);
-		PartModel = wagner.invoke(function(Part) {
-			return Part;
+		ProcessModel = wagner.invoke(function(Process) {
+			return Process;
 		});
 		done();
 	});
 
 	beforeEach(function(done) {
-		PartModel.remove({}, function(err) {
+		ProcessModel.remove({}, function(err) {
 			done();
 		});
 	});
@@ -31,22 +31,21 @@ describe('Part REST Server', function() {
 	});
 
 	it('can be called', function(done) {
-		var url = URL_ROOT + '/api/v1/part';
+		var url = URL_ROOT;
 		superagent.get(url, function(err, res) {
 			assert.ifError(err);
 			done();
 		});
 	});
 
-
-
-	it('create part / REST: POST', function(done) {
-		var url = URL_ROOT + '/api/v1/part';
+/*
+	it('create process / REST: POST', function(done) {
+		var url = URL_ROOT + '/';
 		var name = "abcxyz";
 		superagent.post(url)
-				.send({"partnr":name})
+				.send({id:4711, date: new Date() })
 				.end(function(err, res) {
-			assert.equal(res.body.data.partnr, name); 
+			assert.equal(res.body.id, 4711); 
 			var id = res.body.data._id;
 			assert.notEqual(id, null); 
 			assert.equal(typeof(id), 'string'); 
@@ -196,14 +195,24 @@ describe('Part REST Server', function() {
 			
 		});
 	});
+*/
 
-	it('can update part data / REST: PUT', function(done) {
-		var tmpPart = {partnr:'update', typenr:"typenr", note: { de_DE:"notiz"} };
-		p1 = new PartModel(tmpPart);
-		p1.save(); 
-		var id = p1._id;
 
-		// change typenr
+
+	it('can update process / REST: PUT', function(done) {
+		var tmp = {id:4711, startdate: new Date(), user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			assert.equal(data.id, 4711);
+			var id = data._id;
+
+			var url = URL_ROOT + id;
+
+			done();
+
+		});
+	});
+
+/*		// change typenr
 		var update = { typenr: "newTypenr", partnr:"newPartNr" };
 		var url = URL_ROOT + '/api/v1/part/' + id;
 		// REST: update = put-verb
@@ -224,8 +233,8 @@ describe('Part REST Server', function() {
 			});
 		});
 	});
-
-
+*/
+/*
 	it('can delete a part / REST: DEL', function(done) {
 		// create new part
 		var tmpPart = {partnr:'deletePart', typenr:"typenr", note: { de_DE:"notiz"} };
@@ -250,7 +259,7 @@ describe('Part REST Server', function() {
 			});
 		});
 	});
-
+*/
 });
 
 

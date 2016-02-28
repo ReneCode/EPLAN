@@ -120,7 +120,6 @@ describe('Database', function() {
 			newPart.data.propB = "XYZ";
 			PartModel.update({_id:id}, newPart, function(err, result) {
 				// part is updated
-				console.log(err);
 				assert.equal(result.ok, 1);
 				// now get the modified part
 				PartModel.find({_id:id}, function(err, foundData) {

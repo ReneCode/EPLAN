@@ -23,9 +23,11 @@ module.exports = function(wagner) {
 	});
 
 	var Part = mongoose.model('Part', require('./part.js'), 'parts');
+	var Process = mongoose.model('Process', require('./process.js'), 'process');
 
 	var models = {
-		Part: Part
+		Part: Part,
+		Process: Process
 	};
 
 	// register models
