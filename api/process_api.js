@@ -52,16 +52,14 @@ module.exports = function(wagner) {
  				filter = req.query.f;
  			} 
  			else if (typeof(req.query.f) == 'string') {
-	 			if (typeof(req.query.f) == 'string') {
-	 				filter = {};
-	 				var aFilter = req.query.f.split(' ');
-	 				aFilter.forEach( function(f) {
-		 				var aTok = f.split(':');
-		 				if (aTok.length == 2) {
-		 					filter[aTok[0]] = aTok[1];
-		 				}
-	 				});
-	 			}
+ 				filter = {};
+ 				var aFilter = req.query.f.split(' ');
+ 				aFilter.forEach( function(f) {
+	 				var aTok = f.split(':');
+	 				if (aTok.length == 2) {
+	 					filter[aTok[0]] = aTok[1];
+	 				}
+ 				});
 	 		}
 
  			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
