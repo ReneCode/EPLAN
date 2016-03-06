@@ -44,20 +44,11 @@ module.exports = function(wagner) {
  	api.get('/', wagner.invoke(function(Process) {
  		return function(req, res) {
  			skip = req.query.skip || 0;
- 			limit = req.query.limit || 50;
+ 			limit = req.query.limit || 100;
 
- 			// f = filter
- 			f = req.query.f;
- 			var filter = {};
- 			
- 			if (f) {
- 				var fText = {};
- 				aTok = f.split(':');
- 				if (aTok.length == 2) {
-					fText[aTok[0]] = aTok[1];
-					filter = { $and: [ filter, fText ] };
- 				}
- 			} 
+ 			// f  = filter
+ 			var filter = req.query.f  ||  {};
+
  			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
  				res.json(data);
  			});

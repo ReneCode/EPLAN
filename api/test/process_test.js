@@ -135,6 +135,29 @@ describe('Process REST Server', function() {
 		});
 	});		
 
+	it('filter processes', function(done) {
+		var tmp = {id:4711, duration:451, user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			tmp = {id:4712, duration:451, user_name:"lea" };
+			ProcessModel.create(tmp, function(err, data) {
+				/*
+				var url = URL_ROOT + "?f=duration:451+user_name:paul";
+				superagent.get(url, function(err, result) {
+					*/
+				var url = URL_ROOT;
+				var filter = { f: {duration:451, user_name:"paul"} };
+				superagent.get(url)
+									.query(filter)
+									.end(function(err, result) {
+					assert.equal(result.body.length, 1); 
+					assert.equal(result.body[0].duration, 451); 
+					assert.equal(result.body[0].user_name, "paul"); 
+					done();
+				});
+			});
+		});
+	});		
+
 
 /*
 	it('get all part data', function(done) {
