@@ -61,6 +61,20 @@ module.exports = function(wagner) {
 	 				}
  				});
 	 		}
+	 		if (filter.start_at) {
+	 			// filter on start date 
+	 			// -> filter on just that date - without time
+	 			// >= filterDate  &&  < filterDate+1
+	 			var dt = new Date(filter.start_at);
+	 			var minDt = new Date(dt);
+	 			minDt.setHours(0);
+	 			minDt.setMinutes(0);
+	 			minDt.setSeconds(0);
+	 			var maxDt = new Date(minDt);
+	 			maxDt.setDate(minDt.getDate()+1);
+
+	 			filter.start_at = {"$gte": minDt, "$lt": maxDt};
+	 		}
 
  			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
  				res.json(data);

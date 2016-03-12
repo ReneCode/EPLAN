@@ -180,6 +180,27 @@ describe('Process REST Server', function() {
 		});
 	});		
 
+
+	it('filter process on date', function(done) {
+		var dt = new Date(2015,2,15,20,44);
+		var tmp = {id:4711, start_at: dt, user_name:"paul" };
+		ProcessModel.create(tmp, function(err, data) {
+			dt = new Date(2015,2,16,20,40);
+			tmp = {id:4712, start_at: dt, user_name:"lea" };
+			ProcessModel.create(tmp, function(err, data) {
+				var url = URL_ROOT;
+				var filter = { f: {start_at: new Date(2015,2,15, 23,25,23)}};
+				superagent.get(url)
+					.query(filter)
+					.end(function(err, result) {
+					assert.equal(result.body.length, 1); 
+					assert.equal(result.body[0].user_name, "paul"); 
+					done();
+				});
+			});
+		});
+	});		
+
 /*
 	it('get all part data', function(done) {
 		var p1 = { partnr: 'lap-part', manufacturer:'lap'};
