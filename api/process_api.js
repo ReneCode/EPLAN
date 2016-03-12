@@ -47,20 +47,18 @@ module.exports = function(wagner) {
  			limit = req.query.limit || 100;
 
  			// f  = filter
- 			var filter = {};
- 			if (typeof(req.query.f) == 'object') {
- 				filter = req.query.f;
- 			} 
- 			else if (typeof(req.query.f) == 'string') {
- 				filter = {};
- 				var aFilter = req.query.f.split(' ');
- 				aFilter.forEach( function(f) {
-	 				var aTok = f.split(':');
-	 				if (aTok.length == 2) {
-	 					filter[aTok[0]] = aTok[1];
-	 				}
- 				});
-	 		}
+ 			var filter = { };
+
+ 			if (req.query.user_name) {
+				filter.user_name = req.query.user_name;
+ 			}
+ 			if (req.query.process_name) {
+ 				filter.process_name = req.query.process_name;
+ 			}
+ 			if (req.query.start_at) {
+ 				filter.start_at = req.query.start_at;
+ 			}
+
 	 		if (filter.start_at) {
 	 			// filter on start date 
 	 			// -> filter on just that date - without time

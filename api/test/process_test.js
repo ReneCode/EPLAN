@@ -135,7 +135,7 @@ describe('Process REST Server', function() {
 		});
 	});		
 
-	it('filter processes with query', function(done) {
+	it('filter processes with query object', function(done) {
 		var tmp = {id:4711, duration:451, user_name:"paul" };
 		ProcessModel.create(tmp, function(err, data) {
 			tmp = {id:4712, duration:451, user_name:"lea" };
@@ -145,7 +145,7 @@ describe('Process REST Server', function() {
 				superagent.get(url, function(err, result) {
 					*/
 				var url = URL_ROOT;
-				var filter = { f: {duration:451, user_name:"paul"} };
+				var filter = { user_name:"paul" };
 				superagent.get(url)
 									.query(filter)
 									.end(function(err, result) {
@@ -168,7 +168,7 @@ describe('Process REST Server', function() {
 				var url = URL_ROOT + "?f=duration:451+user_name:paul";
 				superagent.get(url, function(err, result) {
 					*/
-				var url = URL_ROOT + "?f=user_name:paul+duration:451";
+				var url = URL_ROOT + "?user_name=paul";
 				superagent.get(url)
 									.end(function(err, result) {
 					assert.equal(result.body.length, 1); 
@@ -189,7 +189,7 @@ describe('Process REST Server', function() {
 			tmp = {id:4712, start_at: dt, user_name:"lea" };
 			ProcessModel.create(tmp, function(err, data) {
 				var url = URL_ROOT;
-				var filter = { f: {start_at: new Date(2015,2,15, 23,25,23)}};
+				var filter = { start_at : new Date(2015,2,15, 23,25,23)};
 				superagent.get(url)
 					.query(filter)
 					.end(function(err, result) {
