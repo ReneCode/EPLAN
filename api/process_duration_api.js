@@ -1,7 +1,7 @@
 
 var bodyparser = require('body-parser');
 var express = require('express');
-var processUtility = require('process_utility');
+var processUtility = require('./processUtility');
 
 /*
 	REST interface
