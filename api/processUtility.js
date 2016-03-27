@@ -70,7 +70,7 @@ module.exports = (function() {
 				process_name: listOfOneProcess[0].process_name,
 				start_at: sumDuration.start_at,
 				end_at: sumDuration.end_at,
-				duration: sumDuration.duration,
+				duration: sumDuration.duration || 0,
 			});
 		});
 

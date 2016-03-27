@@ -6,6 +6,8 @@ var express = require('express');
 /*
 	REST interface
 
+	routing of: "/process"
+
 	POST  	create a new process
 	GET     get all/some process (with filter)
 	PUT     update a process
@@ -14,6 +16,9 @@ var express = require('express');
 module.exports = function(wagner) {
 	var api = express.Router();
 	api.use(bodyparser.json());
+
+	// route the "/process/duration"
+	api.use('/duration', require('./process_duration_api')(wagner));
 
 	// get single process
 	api.get('/:id', wagner.invoke( function(Process) {
