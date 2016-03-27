@@ -16,6 +16,7 @@ module.exports = function() {
 
 	app.use('/api/v1', require('./api')(wagner));
 	app.use('/process', require('./process_api')(wagner));
+	app.use('/process/duration', require('./process_duration_api')(wagner));
 
 	app.use('/', function(req, res, next) {
  		res.send("Welcome. This is the API layer.");
