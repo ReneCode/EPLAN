@@ -14,27 +14,66 @@ var URL_ROOT = 'http://localhost:3010/process/';
 describe('REST Server', function() {
 	var server;
 	var ProcessModel;
+	var ActionModel;
 
 	before(function(done) {
 		server = app().listen(3010);
 		ProcessModel = wagner.invoke(function(Process) {
 			return Process;
 		});
+
+		ActionModel = wagner.invoke(function(Action) {
+			return Action;
+		});
+
 		done();
 	});
 
 	beforeEach(function(done) {
 		ProcessModel.remove({}, function(err) {
-			done();
+			ActionModel.remove({}, function(err) {
+				done();
+			});
 		});
+
 	});
 	
 	after(function() {
 		server.close();
 	});
 
+	describe('Action REST server', function() {
+		it('can be called', function(done) {
+			var url = URL_ROOT + "/action";
+			superagent.get(url, function(err, res) {
+				assert.ifError(err);
+				done();
+			});
+		});
 
-	describe('Process duration REST server', function() {
+		it('create action / REST: POST', function(done) {
+			var url = URL_ROOT + "/action";
+			var name = "abcxyz";
+			superagent.post(url)
+					.send({start_at: new Date(), user_name:name })
+					.end(function(err, res) {
+				var id = res.body._id;
+				assert.notEqual(id, null); 
+				assert.equal(typeof(id), 'string'); 
+				assert(id.length > 10);
+
+				// find that created action in the database
+				ActionModel.findOne({_id:id}, function(err, result) {
+					assert.equal(null, err);
+					assert.equal(result.user_name, name); 
+					done();
+				});
+			});
+		});
+
+	}); // describe Action REST server
+
+	describe('Duration REST server', function() {
 		it('can be called', function(done) {
 			var url = URL_ROOT + "/duration";
 			superagent.get(url, function(err, res) {
@@ -62,7 +101,13 @@ describe('REST Server', function() {
 				});
 			});
 		});	
-	});
+
+		it ('collect the correct things', function(done) {
+			done();
+		});
+
+
+	}); // describe
 
 	describe('Process REST server', function() {
 

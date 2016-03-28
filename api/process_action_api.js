@@ -6,7 +6,7 @@ var express = require('express');
 /*
 	REST interface
 
-	routing of: "/process"
+	routing of: "/process/action"
 
 	POST  	create a new process
 	GET     get all/some process (with filter)
@@ -17,26 +17,23 @@ module.exports = function(wagner) {
 	var api = express.Router();
 	api.use(bodyparser.json());
 
-	// route the "/process/duration"
-	api.use('/duration', require('./process_duration_api')(wagner));
-	api.use('/action', require('./process_action_api')(wagner));
 
-	// get single process
-	api.get('/:id', wagner.invoke( function(Process) {
+	// get single action
+	api.get('/:id', wagner.invoke( function(Action) {
 		return function(req, res) {
-			Process.findOne({_id:req.params.id}, function(err, data) {
+			Action.findOne({_id:req.params.id}, function(err, data) {
 				res.json(data);
 			});
 		};
 	}));
  
- 	// create a process
- 	api.post('/', wagner.invoke(function(Process) {
+ 	// create a action
+ 	api.post('/', wagner.invoke(function(Action) {
 		return function(req, res) {
 			var p = req.body;
 			// remove _id - it will get a new _id from mongo
 			delete p._id;
-			var process = Process.create(p, function(err, data) {
+			var process = Action.create(p, function(err, data) {
 				if (err) {
 					res.send(err);
 				} else {
@@ -46,8 +43,8 @@ module.exports = function(wagner) {
 		};
 	}));
 
- 	// query process - get multiple parts
- 	api.get('/', wagner.invoke(function(Process) {
+ 	// query action - get multiple parts
+ 	api.get('/', wagner.invoke(function(Action) {
  		return function(req, res) {
  			skip = req.query.skip || 0;
  			limit = req.query.limit || 100;
@@ -57,9 +54,6 @@ module.exports = function(wagner) {
 
  			if (req.query.user_name) {
 				filter.user_name = req.query.user_name;
- 			}
- 			if (req.query.process_name) {
- 				filter.process_name = req.query.process_name;
  			}
  			if (req.query.start_at) {
  				filter.start_at = req.query.start_at;
@@ -80,17 +74,17 @@ module.exports = function(wagner) {
 	 			filter.start_at = {"$gte": minDt, "$lt": maxDt};
 	 		}
 
- 			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
+ 			Action.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
  				res.json(data);
  			});
  		};
  	}));
 
  	// update one process
- 	api.put('/:id', wagner.invoke(function(Process) {
+ 	api.put('/:id', wagner.invoke(function(Action) {
  		return function(req, res) {
  			var updateProcess = req.body;
- 			Process.update({_id:req.params.id}, updateProcess, function(err, result) {
+ 			Action.update({_id:req.params.id}, updateProcess, function(err, result) {
  				if (err) {
  					res.send(err);
  				} else {
@@ -100,9 +94,9 @@ module.exports = function(wagner) {
  		};
  	}));
 
- 	api.delete('/:id', wagner.invoke(function(Process) {
+ 	api.delete('/:id', wagner.invoke(function(Action) {
  		return function(req, res) {
- 			Process.remove({_id:req.params.id}, function(err, result) {
+ 			Action.remove({_id:req.params.id}, function(err, result) {
  				if (err) {
  					res.send(err);
  				} else {

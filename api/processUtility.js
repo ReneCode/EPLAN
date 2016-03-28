@@ -136,11 +136,16 @@ module.exports = (function() {
 		};
 	}
 	
+	function mongoDateToJsDate(sDate) {
+		return new Date(sDate);
+	}
+
 
 	return {
 		calcDuration: calcDuration,
 		calcSumOfDuration: calcSumOfDuration,
-		addMinute: addMinute
+		addMinute: addMinute,
+		mongoDateToJsDate: mongoDateToJsDate
 	};
 
 })();

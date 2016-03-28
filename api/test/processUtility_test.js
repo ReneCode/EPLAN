@@ -3,7 +3,20 @@ var assert = require('assert');
 
 var processUtility = require('../processUtility');
 
-describe('processDuration', function() {
+describe('processUtility', function() {
+
+	describe('mongoDateToJsDate', function() {
+		it ('convert correct date', function() {
+			var strDate = "2016-03-26T17:48:44.000Z";
+			var dt = processUtility.mongoDateToJsDate(strDate);
+			assert.equal(2016, dt.getUTCFullYear());
+			assert.equal(3, dt.getUTCMonth()+1);
+			assert.equal(26, dt.getUTCDate());
+			assert.equal(17, dt.getUTCHours());
+			assert.equal(48, dt.getUTCMinutes());
+			assert.equal(44, dt.getUTCSeconds());
+		});
+	});
 
 	describe('calcDuration', function() {
 		it ('overlap', function() {
@@ -53,8 +66,70 @@ describe('processDuration', function() {
 			assert.equal(oOut[2].duration, 15);
 			assert.deepEqual(oOut[2].start_at, new Date(2016, 2, 2, 6, 10));
 			assert.deepEqual(oOut[2].end_at, new Date(2016, 2, 2, 6, 25));
+		});
+
+		it ('collect more complicate', function() {
+			var oIn = [
+		    {   "duration": 40,
+		        "id": 3636,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T10:22:52.000Z",
+		        "title": "Minecraft 1.8.7",
+		    },
+	/*	    {   "duration": 77,
+		        "id": 3636,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T11:30:46.000Z",
+		        "title": "Minecraft 1.8.7",
+		    },
+		    {   "duration": 2,
+		        "id": 7884,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T15:15:05.000Z",
+		        "title": "Minecraft 1.9",
+		    },
+		    {   "duration": 21,
+		        "id": 4496,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T15:19:06.000Z",
+		        "title": "Minecraft 1.8.7",
+		    },
+		    {   "duration": 46,
+		        "id": 4496,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T16:19:30.000Z",
+		        "title": "Minecraft 1.8.7",
+		    },
+		    {   "duration": 1,
+		        "id": 8036,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T17:06:30.000Z",
+		        "title": "Minecraft 1.9",
+		    },
+		    {   "duration": 37,
+		        "id": 8036,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T17:10:44.000Z",
+		        "title": "Minecraft 1.9",
+		    },
+		    {   "duration": 19,
+		        "id": 5956,
+		        "process_name": "javaw",
+		        "start_at": "2016-03-26T17:48:44.000Z",
+		        "title": "Minecraft 1.8.7",
+		    } */
+			];
+
+			oIn.forEach( function(p) {
+				p.start_at = processUtility.mongoDateToJsDate(p.start_at);
+			})
+
+			var oOut = processUtility.calcDuration(oIn);
+			console.dir(oOut);
+
 
 		});
+
 
 	});
 
