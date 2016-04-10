@@ -31,13 +31,13 @@ module.exports = function(wagner) {
  	api.post('/', wagner.invoke(function(Action) {
 		return function(req, res) {
 			var p = req.body;
-			console.log("Create Action");
-			console.dir(p);
+//			console.log("Create Action");
+//			console.dir(p);
 			// remove _id - it will get a new _id from mongo
 			delete p._id;
 			Action.create(p, function(err, data) {
-				console.dir(err);
-				console.dir(data);
+//				console.dir(err);
+//				console.dir(data);
 				if (err) {
 					res.send(err);
 				} else {

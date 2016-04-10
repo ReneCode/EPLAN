@@ -20,6 +20,7 @@ module.exports = function(wagner) {
 	// route the "/process/duration"
 	api.use('/duration', require('./process_duration_api')(wagner));
 	api.use('/action', require('./process_action_api')(wagner));
+	api.use('/group', require('./process_group_api')(wagner));
 
 	// get single process
 	api.get('/:id', wagner.invoke( function(Process) {

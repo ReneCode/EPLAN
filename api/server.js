@@ -12,12 +12,12 @@ module.exports = function() {
 
 	var app = express();
 
-
+/*
 	app.use( function(req, res, next) {
-		console.log(new Date(), req.method, req.url);
+	//	console.log(new Date(), req.method, req.url);
   	next();
 	});
-
+*/
 
 	app.use(cors());
 

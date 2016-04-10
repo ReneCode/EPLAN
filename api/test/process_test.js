@@ -282,6 +282,27 @@ describe('REST Server', function() {
 			});
 		});		
 
+	});
+
+	describe("group", function() {
+		it('group by user_name', function(done) {
+			var tmp = {id:4711, duration:451, user_name:"paul" };
+			ProcessModel.create(tmp, function(err, data) {
+				tmp = {id:4712, duration:451, user_name:"lea" };
+				ProcessModel.create(tmp, function(err, data) {
+
+					var url = URL_ROOT + "group/user_name";
+					superagent.get(url)
+										.end(function(err, result) {
+						assert.equal(result.body.length, 2); 
+						assert.equal(result.body[0]._id, "lea"); 
+						assert.equal(result.body[1]._id, "paul"); 
+						done();
+					});
+				});
+			});
+		});	
+
 	/*
 		it('get all part data', function(done) {
 			var p1 = { partnr: 'lap-part', manufacturer:'lap'};
