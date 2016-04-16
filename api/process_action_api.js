@@ -51,7 +51,7 @@ module.exports = function(wagner) {
  	api.get('/', wagner.invoke(function(Action) {
  		return function(req, res) {
  			skip = req.query.skip || 0;
- 			limit = req.query.limit || 100;
+ 			limit = req.query.limit || 200;
 
  			// f  = filter
  			var filter = { };
