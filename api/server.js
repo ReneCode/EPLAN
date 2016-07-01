@@ -4,6 +4,8 @@ module.exports = function() {
 	var express = require('express');
 	var wagner = require('wagner-core');
 	var cors = require('cors');
+	var http = require('http');
+	var mongoose = require('mongoose');
 
 	// initialize the 'Config' service
 	require('./config.js')(wagner);
@@ -29,7 +31,15 @@ module.exports = function() {
 	});
 
 
-	return app;
+	var server = http.createServer(app);
 
+	server.on('close', function() {
+		// close connection + reset the models
+		// than restarting (during tests) is possible
+		mongoose.models = [];
+		mongoose.connection.close();
+	});
+
+	return server;
 };
 

@@ -6,10 +6,15 @@
 var server = require('./server.js');
 
 var app = server();
+
+/*
 var http = require('http');
 	
-var port = 64010;
 http.createServer(app).listen(port);
+*/
 
-console.log('REST Server is listing on Port', port);
+var port = 64010;
+app().listen(port, function() {
+	console.log('REST Server is listing on Port', port);
+});
 

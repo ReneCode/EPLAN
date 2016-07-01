@@ -38,8 +38,10 @@ describe('REST Server', function() {
 
 	});
 	
-	after(function() {
-		server.close();
+	after(function(done) {
+		server.close(function() {
+			done();
+		});
 	});
 
 	describe('Action REST server', function() {
@@ -83,19 +85,15 @@ describe('REST Server', function() {
 		});
 
 		it('get one duration', function(done) {
-			var dt = new Date(2015,2,16,20,44);
-			var tmp = {id:4711, title:"Title-A", process_name:"p1", duration:5, start_at: dt, user_name:"paul" };
+			var dt = new Date(2015,2,16,20,40);
+			var tmp = {id:4711, title:"Title-A", process_name:"p1", duration:10, start_at: dt, user_name:"paul" };
 			ProcessModel.create(tmp, function(err, data) {
-				// that document is 1 minute older
-				dt = new Date(2015,2,16,20,40);
-				tmp = {id:4712, process_name:"p2", start_at: dt, duration:10, user_name:"lea" };
+				dt = new Date(2015,2,16,20,35);
+				tmp = {id:4712, process_name:"p2", start_at: dt, duration:8, user_name:"lea" };
 				ProcessModel.create(tmp, function(err, data) {
 					var url = URL_ROOT + "/duration";
 					superagent.get(url, function(err, result) {
-						assert.equal(result.body.length, 2); 
-						assert.equal(result.body[0].duration, 5); 
-						assert.equal(result.body[0].process_name, "p1"); 
-						assert.equal(result.body[1].process_name, "p2"); 
+						assert.equal(result.body.duration, 15); 
 						done();
 					});
 				});
