@@ -45,7 +45,98 @@ describe('processUtility', function() {
 			assert.equal(processUtility.isOverlapped(p2, p3), false);
 			assert.equal(processUtility.isOverlapped(p2, p4), true);		// same date (12)
 		});
+
+		it ('combine two overlapping processes p1 < p2', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 12), duration:10 };
+			processUtility.addEndAt(p1);	//    10 .............. 20
+			processUtility.addEndAt(p2);	//          12 ............. 22
+
+			var ret = processUtility.combineProcess(p1, p2);
+			assert.equal(true, ret);
+			assert.deepEqual(p1.start_at, new Date(2016, 2, 2, 6, 10));
+			assert.deepEqual(p1.end_at, p2.end_at);
+		});
+
+		it ('combine two overlapping processes p1 > p2', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:6 };
+			processUtility.addEndAt(p1);	//    10 .............. 20
+			processUtility.addEndAt(p2);	// 5 ......11
+
+			var ret = processUtility.combineProcess(p1, p2);
+			assert.equal(true, ret);
+			assert.deepEqual(p1.start_at, new Date(2016, 2, 2, 6, 5));
+			assert.deepEqual(p1.end_at, new Date(2016, 2, 2, 6, 20));
+		});
+
+
+		it ('combine two not overlapping processes', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 22), duration:10 };
+			processUtility.addEndAt(p1);	//    10 .............. 20
+			processUtility.addEndAt(p2);	//                           22 ............. 32
+
+			var ret = processUtility.combineProcess(p1, p2);
+			assert.equal(false, ret);
+			assert.deepEqual(p1.start_at, new Date(2016, 2, 2, 6, 10));
+			assert.deepEqual(p1.end_at, new Date(2016, 2, 2, 6, 20));
+		});
+
+
+		it ('combine to processList simple', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 12), duration:10 };
+			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:6 };
+			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 30), duration:5 };
+			processUtility.addEndAt(p1);	//    10 .............. 20
+			processUtility.addEndAt(p2);	//          12 ............ 22
+			processUtility.addEndAt(p3);    // 5 .. 11
+			processUtility.addEndAt(p4);    //                              30 .... 35
+
+			var result = [];
+			processUtility.combineToProcessList(result, p1);
+			assert.deepEqual(result.length, 1);
+			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 10));
+			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 20));
+
+			processUtility.combineToProcessList(result, p2);
+			assert.deepEqual(result.length, 1);
+			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 10));
+			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 22));
+			
+			processUtility.combineToProcessList(result, p3);
+			assert.deepEqual(result.length, 1);
+			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 5));
+			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 22));
+
+			processUtility.combineToProcessList(result, p4);
+			assert.deepEqual(result.length, 2);
+			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 5));
+			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 22));
+
+			assert.deepEqual(result[1].start_at, new Date(2016, 2, 2, 6, 30));
+			assert.deepEqual(result[1].end_at, new Date(2016, 2, 2, 6, 35));
+		})
+
+		it ('combine to processList shrink', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:5 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 20), duration:5 };
+			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 14), duration:6 };
+			processUtility.addEndAt(p1);	//    10 ......15
+			processUtility.addEndAt(p2);	//                         20 .......... 25
+			processUtility.addEndAt(p3);    //            14 ..........20
+						
+			var result = [p1, p2];
+			assert.deepEqual(result.length, 2);
+
+			processUtility.combineToProcessList(result, p3);
+			assert.deepEqual(result.length, 1);
+			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 10));
+			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 25));
+		});
 	});
+
 
 	describe('calcDuration', function() {
 		it ('overlap', function() {

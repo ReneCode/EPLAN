@@ -71,9 +71,47 @@ module.exports = (function() {
 		return false;
 	} 
 
-	function addProcess(processList, process) {
-
+	function combineProcess(result, p2) {
+		if (isOverlapped(result, p2)) {
+			if (result.start_at > p2.start_at) {
+				result.start_at = p2.start_at;
+			}
+			if (result.end_at < p2.end_at) {
+				result.end_at = p2.end_at;
+			}
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
+
+	function combineToProcessList(result, p2) {
+		var combined = false;
+		var finish = false;
+		for (var i=0; !finish &&  i<result.length; i++) {
+			if (!combined) {
+				if (combineProcess(result[i], p2)) {
+					combined = true;
+				}
+			}
+			else {
+				finish = true;
+				// look if we should combine it with the previous process
+				if (isOverlapped(result[i], p2)) {
+					// combine with the previous
+					combineProcess(result[i-1], result[i]);
+					// and remove it
+					result.splice(i, 1);
+				}
+			}
+		}
+		if (!combined) {
+			result.push(p2);
+		}
+	}
+
+
 
 	function calcDuration(processList) {
 		// sort by process_name
@@ -172,6 +210,8 @@ module.exports = (function() {
 	return {
 		isOverlapped: isOverlapped,
 		addEndAt: addEndAt,
+		combineProcess: combineProcess,
+		combineToProcessList: combineToProcessList,
 		calcDuration: calcDuration,
 		calcSumOfDuration: calcSumOfDuration,
 		mongoDateToJsDate: mongoDateToJsDate
