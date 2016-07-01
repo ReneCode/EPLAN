@@ -6,6 +6,9 @@ module.exports = (function() {
 		return new Date(date.getTime() + minutes*60000);
 	}
 
+	function mongoDateToJsDate(sDate) {
+		return new Date(sDate);
+	}
 
 	function newDuration(process) {
 		return { start_at: process.start_at,
@@ -39,6 +42,38 @@ module.exports = (function() {
 		}
 	}
 
+	// add a end_at property
+	function addEndAt(process) {
+
+		if (Array.isArray(process)) {
+			process.forEach( function(p) {
+				p.end_at = addMinute(p.start_at, p.duration);
+			});
+		}
+		else {
+			// simple object
+			process.end_at = addMinute(process.start_at, process.duration);
+		}
+	}
+
+
+	function isOverlapped(p1, p2) {
+		//  /---p1---\
+		//       \------p2----/
+		if (p2.start_at >= p1.start_at  &&  p2.start_at <= p1.end_at) {
+			return true;
+		}
+		//        	/---p1---\
+		//    \------p2----/
+		if (p1.start_at >= p2.start_at  &&  p1.start_at <= p2.end_at) {
+			return true;
+		}
+		return false;
+	} 
+
+	function addProcess(processList, process) {
+
+	}
 
 	function calcDuration(processList) {
 		// sort by process_name
@@ -79,11 +114,7 @@ module.exports = (function() {
 
 
 	function calcSumOfDuration(processList) {
-		// add a end_at property
-		processList.forEach( function(p) {
-			p.end_at = addMinute(p.start_at, p.duration);
-		});
-
+		addEndAt(processList);
 		// sort by start_at
 		processList.sort( function(a,b) {
 			if (a.start_at < b.start_at) {
@@ -136,15 +167,13 @@ module.exports = (function() {
 		};
 	}
 	
-	function mongoDateToJsDate(sDate) {
-		return new Date(sDate);
-	}
 
 
 	return {
+		isOverlapped: isOverlapped,
+		addEndAt: addEndAt,
 		calcDuration: calcDuration,
 		calcSumOfDuration: calcSumOfDuration,
-		addMinute: addMinute,
 		mongoDateToJsDate: mongoDateToJsDate
 	};
 

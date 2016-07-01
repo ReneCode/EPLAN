@@ -5,7 +5,7 @@ var processUtility = require('../processUtility');
 
 describe('processUtility', function() {
 
-	describe('mongoDateToJsDate', function() {
+	describe('basic methods', function() {
 		it ('convert correct date', function() {
 			var strDate = "2016-03-26T17:48:44.000Z";
 			var dt = processUtility.mongoDateToJsDate(strDate);
@@ -15,6 +15,35 @@ describe('processUtility', function() {
 			assert.equal(17, dt.getUTCHours());
 			assert.equal(48, dt.getUTCMinutes());
 			assert.equal(44, dt.getUTCSeconds());
+		});
+
+		it ('set end_at property', function() {
+			var data = [ 
+			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:1 },
+			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:0.5 },
+			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:0.75 },
+			];
+
+			processUtility.addEndAt(data);
+			assert.deepEqual(new Date(2016, 2, 2, 6, 11), data[0].end_at); 
+			assert.deepEqual(new Date(2016, 2, 2, 6, 10, 30), data[1].end_at); 
+			assert.deepEqual(new Date(2016, 2, 2, 6, 10, 45), data[2].end_at); 
+		});
+
+		it ('isOverlapped', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 12), duration:1 };
+			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:6 };
+			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:7 };
+			processUtility.addEndAt(p1);	//    10 .............. 20
+			processUtility.addEndAt(p2);	//          12 ... 13
+			processUtility.addEndAt(p3);    // 5 .. 11
+			processUtility.addEndAt(p4);    // 5 ....   12
+
+			assert.equal(processUtility.isOverlapped(p1, p2), true);
+			assert.equal(processUtility.isOverlapped(p1, p3), true);
+			assert.equal(processUtility.isOverlapped(p2, p3), false);
+			assert.equal(processUtility.isOverlapped(p2, p4), true);		// same date (12)
 		});
 	});
 
@@ -125,7 +154,7 @@ describe('processUtility', function() {
 			})
 
 			var oOut = processUtility.calcDuration(oIn);
-			console.dir(oOut);
+//			console.dir(oOut);
 
 
 		});

@@ -46,11 +46,12 @@ module.exports = function(wagner) {
 	 			var maxDt = new Date(minDt);
 	 			maxDt.setDate(minDt.getDate()+1);
 
-	 			filter.start_at = {"$gte": minDt, "$lt": maxDt};
+	 			filter.start_at = {"$gte": minDt, "$lte": maxDt};
 	 		}
 
  			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
- 				res.json( processUtility.calcDuration(data) );
+				 console.log(data);
+ 				//res.json( processUtility.calcDuration(data) );
  			});
  		};
  	}));
