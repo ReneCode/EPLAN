@@ -43,8 +43,7 @@ module.exports = (function() {
 	}
 
 	// add a end_at property
-	function addEndAt(process) {
-
+	function setEndAt(process) {
 		if (Array.isArray(process)) {
 			process.forEach( function(p) {
 				p.end_at = addMinute(p.start_at, p.duration);
@@ -56,6 +55,9 @@ module.exports = (function() {
 		}
 	}
 
+	function setDuration(process) {
+		process.duration = Math.round( (process.end_at - process.start_at) / 60000 );
+	}
 
 	function isOverlapped(p1, p2) {
 		//  /---p1---\
@@ -111,6 +113,50 @@ module.exports = (function() {
 		}
 	}
 
+	function getCompressedProcessList(processList) {
+		setEndAt(processList);
+
+		// sort by process_name
+		processList.sort( function(p1, p2) {
+			if (p1.start_at < p2.start_at) {
+				return -1;
+			}
+			if (p1.start_at > p2.start_at) {
+				return 1;
+			}
+			return 0;
+		});
+		
+
+		var result = [];
+		processList.forEach( function(p) {
+			var len = result.length;
+			if (len == 0) {
+				result.push(p);
+			}
+			else {
+				if (!combineProcess(result[len-1], p)) {
+					result.push(p);
+				}
+			}
+		});
+
+		result.forEach(function(p) {
+			setDuration(p);
+		})
+
+		return result;
+	}
+
+
+	function getProcessListDuration(processList) {
+		var result = getCompressedProcessList(processList);
+		var duration = 0.0;
+		result.forEach( function(r) {
+			duration += r.duration;
+		});
+		return duration;
+	}
 
 
 	function calcDuration(processList) {
@@ -152,7 +198,7 @@ module.exports = (function() {
 
 
 	function calcSumOfDuration(processList) {
-		addEndAt(processList);
+		setEndAt(processList);
 		// sort by start_at
 		processList.sort( function(a,b) {
 			if (a.start_at < b.start_at) {
@@ -209,9 +255,12 @@ module.exports = (function() {
 
 	return {
 		isOverlapped: isOverlapped,
-		addEndAt: addEndAt,
+		setEndAt: setEndAt,
 		combineProcess: combineProcess,
 		combineToProcessList: combineToProcessList,
+		getCompressedProcessList: getCompressedProcessList,
+		getProcessListDuration: getProcessListDuration,
+
 		calcDuration: calcDuration,
 		calcSumOfDuration: calcSumOfDuration,
 		mongoDateToJsDate: mongoDateToJsDate

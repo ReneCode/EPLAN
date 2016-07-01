@@ -24,7 +24,7 @@ describe('processUtility', function() {
 			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:0.75 },
 			];
 
-			processUtility.addEndAt(data);
+			processUtility.setEndAt(data);
 			assert.deepEqual(new Date(2016, 2, 2, 6, 11), data[0].end_at); 
 			assert.deepEqual(new Date(2016, 2, 2, 6, 10, 30), data[1].end_at); 
 			assert.deepEqual(new Date(2016, 2, 2, 6, 10, 45), data[2].end_at); 
@@ -35,10 +35,10 @@ describe('processUtility', function() {
 			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 12), duration:1 };
 			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:6 };
 			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:7 };
-			processUtility.addEndAt(p1);	//    10 .............. 20
-			processUtility.addEndAt(p2);	//          12 ... 13
-			processUtility.addEndAt(p3);    // 5 .. 11
-			processUtility.addEndAt(p4);    // 5 ....   12
+			processUtility.setEndAt(p1);	//    10 .............. 20
+			processUtility.setEndAt(p2);	//          12 ... 13
+			processUtility.setEndAt(p3);    // 5 .. 11
+			processUtility.setEndAt(p4);    // 5 ....   12
 
 			assert.equal(processUtility.isOverlapped(p1, p2), true);
 			assert.equal(processUtility.isOverlapped(p1, p3), true);
@@ -49,8 +49,8 @@ describe('processUtility', function() {
 		it ('combine two overlapping processes p1 < p2', function() {
 			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
 			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 12), duration:10 };
-			processUtility.addEndAt(p1);	//    10 .............. 20
-			processUtility.addEndAt(p2);	//          12 ............. 22
+			processUtility.setEndAt(p1);	//    10 .............. 20
+			processUtility.setEndAt(p2);	//          12 ............. 22
 
 			var ret = processUtility.combineProcess(p1, p2);
 			assert.equal(true, ret);
@@ -61,8 +61,8 @@ describe('processUtility', function() {
 		it ('combine two overlapping processes p1 > p2', function() {
 			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
 			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:6 };
-			processUtility.addEndAt(p1);	//    10 .............. 20
-			processUtility.addEndAt(p2);	// 5 ......11
+			processUtility.setEndAt(p1);	//    10 .............. 20
+			processUtility.setEndAt(p2);	// 5 ......11
 
 			var ret = processUtility.combineProcess(p1, p2);
 			assert.equal(true, ret);
@@ -74,8 +74,8 @@ describe('processUtility', function() {
 		it ('combine two not overlapping processes', function() {
 			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:10 };
 			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 22), duration:10 };
-			processUtility.addEndAt(p1);	//    10 .............. 20
-			processUtility.addEndAt(p2);	//                           22 ............. 32
+			processUtility.setEndAt(p1);	//    10 .............. 20
+			processUtility.setEndAt(p2);	//                           22 ............. 32
 
 			var ret = processUtility.combineProcess(p1, p2);
 			assert.equal(false, ret);
@@ -89,10 +89,10 @@ describe('processUtility', function() {
 			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 12), duration:10 };
 			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 5), duration:6 };
 			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 30), duration:5 };
-			processUtility.addEndAt(p1);	//    10 .............. 20
-			processUtility.addEndAt(p2);	//          12 ............ 22
-			processUtility.addEndAt(p3);    // 5 .. 11
-			processUtility.addEndAt(p4);    //                              30 .... 35
+			processUtility.setEndAt(p1);	//    10 .............. 20
+			processUtility.setEndAt(p2);	//          12 ............ 22
+			processUtility.setEndAt(p3);    // 5 .. 11
+			processUtility.setEndAt(p4);    //                              30 .... 35
 
 			var result = [];
 			processUtility.combineToProcessList(result, p1);
@@ -123,9 +123,9 @@ describe('processUtility', function() {
 			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:5 };
 			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 20), duration:5 };
 			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 14), duration:6 };
-			processUtility.addEndAt(p1);	//    10 ......15
-			processUtility.addEndAt(p2);	//                         20 .......... 25
-			processUtility.addEndAt(p3);    //            14 ..........20
+			processUtility.setEndAt(p1);	//    10 ......15
+			processUtility.setEndAt(p2);	//                         20 .......... 25
+			processUtility.setEndAt(p3);    //            14 ..........20
 						
 			var result = [p1, p2];
 			assert.deepEqual(result.length, 2);
@@ -135,7 +135,52 @@ describe('processUtility', function() {
 			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 10));
 			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 25));
 		});
+
+
 	});
+
+
+	describe('work on process list', function() {
+		it ('compress list', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:5 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 24), duration:2 };
+			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 14), duration:6 };
+			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 22), duration:3 };
+			// p1    10 ......15
+			// p2                                   24 .......... 26
+			// p3           14 ..........20
+			// p4                                22.... 25
+						
+			var result = [p1, p2, p3, p4];
+			assert.deepEqual(result.length, 4);
+
+			result = processUtility.getCompressedProcessList(result);
+			assert.deepEqual(result.length, 2);
+			assert.deepEqual(result[0].start_at, new Date(2016, 2, 2, 6, 10));
+			assert.deepEqual(result[0].end_at, new Date(2016, 2, 2, 6, 20));
+			assert.deepEqual(result[0].duration, 10);
+
+			assert.deepEqual(result[1].start_at, new Date(2016, 2, 2, 6, 22));
+			assert.deepEqual(result[1].end_at, new Date(2016, 2, 2, 6, 26));
+			assert.deepEqual(result[1].duration, 4);
+		});
+
+		it ('duration of list', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:5 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 24), duration:2 };
+			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 14), duration:6 };
+			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 22), duration:3 };
+			// p1    10 ......15
+			// p2                                   24 .......... 26
+			// p3           14 ..........20
+			// p4                                22.... 25
+						
+			var list = [p1, p2, p3, p4];
+			duration = processUtility.getProcessListDuration(list);
+			assert.deepEqual(duration, 14);
+		});
+
+	})
 
 
 	describe('calcDuration', function() {
