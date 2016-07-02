@@ -42,6 +42,14 @@ module.exports = (function() {
 		}
 	}
 
+	function getDateWithoutTime(dt) {
+		return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+	}
+
+	function dateEqual(dt1, dt2) {
+		return dt1.getTime() === dt2.getTime();
+	}
+
 	// add a end_at property
 	function setEndAt(process) {
 		if (Array.isArray(process)) {
@@ -113,9 +121,8 @@ module.exports = (function() {
 		}
 	}
 
-	function getCompressedProcessList(processList) {
-		setEndAt(processList);
 
+	function sortListByStartAt(processList) {
 		// sort by process_name
 		processList.sort( function(p1, p2) {
 			if (p1.start_at < p2.start_at) {
@@ -126,7 +133,12 @@ module.exports = (function() {
 			}
 			return 0;
 		});
-		
+	}
+
+	function getCompressedProcessList(processList) {
+		setEndAt(processList);
+
+		sortListByStartAt(processList);		
 
 		var result = [];
 		processList.forEach( function(p) {
@@ -149,7 +161,7 @@ module.exports = (function() {
 	}
 
 
-	function getProcessListDuration(processList) {
+	function getProcessDuration(processList) {
 		var result = getCompressedProcessList(processList);
 		var duration = 0.0;
 		result.forEach( function(r) {
@@ -159,99 +171,39 @@ module.exports = (function() {
 	}
 
 
-	function calcDuration(processList) {
-		// sort by process_name
-		processList.sort( function(p1, p2) {
-			if (p1.process_name < p2.process_name) {
-				return -1;
-			}
-			if (p1.process_name > p2.process_name) {
-				return 1;
-			}
-			return 0;
-		});
+	function getProcessDurationGroupedByDate(processList) {
+		sortListByStartAt(processList);
 
-		var ids = [];
+		// list of dates (without time) and their process items
+		// array-element =  { date: xy,   process:[...] }
+		var dateList = [];
+
 		processList.forEach( function(p) {
-			if (ids.indexOf(p.id) < 0) {
-				ids.push(p.id);
-			}
-		});
-
-		var durations = [];
-		ids.forEach( function(id) {
-			var listOfOneProcess = processList.filter( function(p) {
-				return p.id === id;
-			});
-			var sumDuration = calcSumOfDuration(listOfOneProcess);
-			durations.push( {
-				id: listOfOneProcess[0].id,
-				process_name: listOfOneProcess[0].process_name,
-				start_at: sumDuration.start_at,
-				end_at: sumDuration.end_at,
-				duration: sumDuration.duration || 0,
-			});
-		});
-
-		return durations;
-	}
-
-
-	function calcSumOfDuration(processList) {
-		setEndAt(processList);
-		// sort by start_at
-		processList.sort( function(a,b) {
-			if (a.start_at < b.start_at) {
-				return -1;
-			}
-			if (a.start_at > b.start_at) {
-				return 1;
-			}
-			return 0;
-		});
-
-		// combine overlapping processes to one 
-		var durations = [];
-		processList.forEach( function(p) {
-			if (durations.length === 0  ||  !overlap(durations[durations.length-1], p) ) {
-				durations.push(newDuration(p));
+			dt = getDateWithoutTime(p.start_at);
+			if (dateList.length == 0) {
+				dateList.push({date:dt, process: [p]});
 			}
 			else {
-				// overlap
-				durations[durations.length-1].end_at = maxDate(
-						durations[durations.length-1].end_at,
-						p.end_at);
+				if (  dateEqual(dt, dateList[ dateList.length-1 ].date) ) {
+					// same date   
+					// append to list array
+					dateList[ dateList.length-1 ].process.push(p);
+				}
+				else {
+					// new date
+					dateList.push({date:dt, process: [p]});
+				}
 			}
 		});
 
-		// recalc duration
-		durations.forEach( function(d) {
-			d.duration = Math.round( (d.end_at - d.start_at) / 60000 );
-		});
-
-		var sumDuration = 0;
-		var minStartAt, maxEndAt;
-		durations.forEach(function(d) {
-			sumDuration += d.duration;
-			if (!minStartAt) {
-					minStartAt = d.start_at;	
-			} else {
-					minStartAt = minDate(minStartAt, d.start_at);
-			}
-			if (!maxEndAt) {
-				maxEndAt = d.end_at;
-			} else {
-				maxEndAt = maxDate(maxEndAt, d.end_at);
-			}
-		});
-		return { 
-			duration: sumDuration,
-			start_at: minStartAt,
-			end_at: maxEndAt
-		};
+		// now get the duration of each date
+		var result = [];
+		dateList.forEach(function(dp) {
+			result.push( { date: dp.date, 
+						   duration: getProcessDuration(dp.process)});
+		})
+		return result;
 	}
-	
-
 
 	return {
 		isOverlapped: isOverlapped,
@@ -259,10 +211,9 @@ module.exports = (function() {
 		combineProcess: combineProcess,
 		combineToProcessList: combineToProcessList,
 		getCompressedProcessList: getCompressedProcessList,
-		getProcessListDuration: getProcessListDuration,
+		getProcessDuration: getProcessDuration,
+		getProcessDurationGroupedByDate: getProcessDurationGroupedByDate,
 
-		calcDuration: calcDuration,
-		calcSumOfDuration: calcSumOfDuration,
 		mongoDateToJsDate: mongoDateToJsDate
 	};
 

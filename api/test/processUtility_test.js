@@ -176,63 +176,36 @@ describe('processUtility', function() {
 			// p4                                22.... 25
 						
 			var list = [p1, p2, p3, p4];
-			duration = processUtility.getProcessListDuration(list);
+			duration = processUtility.getProcessDuration(list);
 			assert.deepEqual(duration, 14);
 		});
+
+		it ('duration of list grouped by date', function() {
+			var p1 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:5 };
+			var p2 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 24), duration:2 };
+			var p3 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 14), duration:6 };
+			var p4 = { id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 4, 6, 22), duration:3 };
+			// p1    10 ......15
+			// p2                                   24 .......... 26
+			// p3           14 ..........20
+			// p4  next date !                               22.... 25
+						
+			var list = [p1, p2, p3, p4];
+			var result = processUtility.getProcessDurationGroupedByDate(list);
+			assert.equal(result.length, 2);
+			assert.deepEqual(result[0].date, new Date(2016, 2, 2));
+			assert.deepEqual(result[1].date, new Date(2016, 2, 4));
+
+			assert.equal(result[0].duration, 12);
+			assert.equal(result[1].duration, 3);
+		});
+
 
 	})
 
 
 	describe('calcDuration', function() {
-		it ('overlap', function() {
-			var oIn = [ 
-			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 15), duration:14 },
-			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:7 },
-			];
-
-			var oOut = processUtility.calcDuration(oIn);
-			assert.equal(oOut.length, 1);
-			assert.equal(oOut[0].id, 4711);
-			assert.equal(oOut[0].process_name, 'javaw');
-			assert.equal(oOut[0].duration, 19);
-			assert.deepEqual(oOut[0].start_at, new Date(2016, 2, 2, 6, 10));
-			assert.deepEqual(oOut[0].end_at, new Date(2016, 2, 2, 6, 29));
-		});
-
-		it ('not overlap', function() {
-
-			var oIn = [ 
-			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 25), duration:14 },
-			{ id:4711, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:6 },
-			];
-
-			var oOut = processUtility.calcDuration(oIn);
-			assert.equal(oOut.length, 1);
-			assert.equal(oOut[0].id, 4711);
-			assert.equal(oOut[0].duration, 20);
-			assert.deepEqual(oOut[0].start_at, new Date(2016, 2, 2, 6, 10));
-			assert.deepEqual(oOut[0].end_at, new Date(2016, 2, 2, 6, 39));
-		});
-
-		it ('different processes - overlap', function() {
-			var oIn = [ 
-			{ id:4711, process_name: 'cmd', start_at: new Date(2016, 2, 2, 6, 15), duration:14 },
-			{ id:4712, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 10), duration:7 },
-			{ id:4712, process_name: 'javaw', start_at: new Date(2016, 2, 2, 6, 15), duration:10 },
-			{ id:4713, process_name: 'abc', start_at: new Date(2016, 2, 2, 6, 10), duration:14 }
-			];
-
-			var oOut = processUtility.calcDuration(oIn);
-			assert.equal(oOut.length, 3);
-			assert.equal(oOut[0].id, 4713);
-			assert.equal(oOut[0].process_name, 'abc');
-			assert.equal(oOut[0].duration, 14);
-			assert.equal(oOut[2].id, 4712);
-			assert.equal(oOut[2].duration, 15);
-			assert.deepEqual(oOut[2].start_at, new Date(2016, 2, 2, 6, 10));
-			assert.deepEqual(oOut[2].end_at, new Date(2016, 2, 2, 6, 25));
-		});
-
+		
 		it ('collect more complicate', function() {
 			var oIn = [
 		    {   "duration": 40,
@@ -241,7 +214,7 @@ describe('processUtility', function() {
 		        "start_at": "2016-03-26T10:22:52.000Z",
 		        "title": "Minecraft 1.8.7",
 		    },
-	/*	    {   "duration": 77,
+		    {   "duration": 77,
 		        "id": 3636,
 		        "process_name": "javaw",
 		        "start_at": "2016-03-26T11:30:46.000Z",
@@ -282,15 +255,14 @@ describe('processUtility', function() {
 		        "process_name": "javaw",
 		        "start_at": "2016-03-26T17:48:44.000Z",
 		        "title": "Minecraft 1.8.7",
-		    } */
+		    } 
 			];
 
 			oIn.forEach( function(p) {
 				p.start_at = processUtility.mongoDateToJsDate(p.start_at);
-			})
+			});
 
-			var oOut = processUtility.calcDuration(oIn);
-//			console.dir(oOut);
+			var result = processUtility.getProcessDurationGroupedByDate(oIn);
 
 
 		});

@@ -50,7 +50,7 @@ module.exports = function(wagner) {
 	 		}
 
  			Process.find(filter).sort('start_at').skip(skip).limit(limit).exec(function(err, data) {
- 				res.json( {duration:processUtility.getProcessListDuration(data)} );
+ 				res.json( {duration:processUtility.getProcessDuration(data)} );
  			});
  		};
  	}));
