@@ -44,7 +44,7 @@ describe('REST Server Logging', function() {
 			});
 		});
 
-		it('create logging / REST: POST', function(done) {
+		it('create logging with send-data/ REST: POST', function(done) {
 			var url = URL_ROOT;
 			var text = "abcxyz";
 			superagent.post(url)
@@ -63,6 +63,39 @@ describe('REST Server Logging', function() {
 				});
 			});
 		});
+
+
+		function objToParameter(obj) {
+			var str = "";
+			for (var key in obj) {
+			    if (str != "") {
+			        str += "&";
+			    }
+			    str += key + "=" + encodeURIComponent(obj[key]);
+			}
+			return str;
+		}
+
+
+		it('create logging with parameter-data / REST: POST', function(done) {
+			var url = URL_ROOT;
+			var text = "my-parameter";
+			var data = {text: text};
+			superagent.post(url + "?"+ objToParameter(data), function(err, res) {
+				var id = res.body._id;
+				assert.notEqual(id, null); 
+				assert.equal(typeof(id), 'string'); 
+				assert(id.length > 10);
+
+				// find that created action in the database
+				LoggingModel.findOne({_id:id}, function(err, result) {
+					assert.equal(null, err);
+					assert.equal(result.text, text); 
+					done();
+				});
+			});
+		});
+
 
 		it('get many logging data', function(done) {
 			var dt = new Date(2015,2,16,20,44);

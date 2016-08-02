@@ -16,10 +16,15 @@ module.exports = function(wagner) {
 	var api = express.Router();
 	api.use(bodyparser.json());
 
- 	// create a process
+ 	// create a loging
  	api.post('/', wagner.invoke(function(Logging) {
 		return function(req, res) {
 			var p = req.body;
+			if (Object.keys(p).length == 0) {
+				// no post data
+				// than check out the parameter
+				p = req.query;
+			}
 			// remove _id - it will get a new _id from mongo
 			delete p._id;
 			var logging = Logging.create(p, function(err, data) {
@@ -31,6 +36,9 @@ module.exports = function(wagner) {
 			});
 		};
 	}));
+
+
+
 
  	// query process - get multiple parts
  	api.get('/', wagner.invoke(function(Logging) {
