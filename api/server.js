@@ -24,6 +24,7 @@ module.exports = function() {
 	app.use(cors());
 
 	app.use('/api/v1', require('./api')(wagner));
+	app.use('/logging', require('./logging_api')(wagner));
 	app.use('/process', require('./process_api')(wagner));
 
 	app.use('/', function(req, res, next) {

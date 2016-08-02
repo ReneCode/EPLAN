@@ -25,11 +25,13 @@ module.exports = function(wagner) {
 	var Part = mongoose.model('Part', require('./part.js'), 'parts');
 	var Process = mongoose.model('Process', require('./process.js'), 'process');
 	var Action = mongoose.model('Action', require('./action.js'), 'action');
+	var Logging = mongoose.model('Logging', require('./logging.js'), 'logging');
 
 	var models = {
 		Part: Part,
 		Process: Process,
-		Action: Action
+		Action: Action,
+		Logging: Logging
 	};
 
 	// register models
