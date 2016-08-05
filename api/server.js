@@ -6,6 +6,7 @@ module.exports = function() {
 	var cors = require('cors');
 	var http = require('http');
 	var mongoose = require('mongoose');
+	var morgan = require('morgan');
 
 	// initialize the 'Config' service
 	require('./config.js')(wagner);
@@ -21,6 +22,7 @@ module.exports = function() {
 	});
 */
 
+	app.use( morgan('combined') );
 	app.use(cors());
 
 	app.use('/api/v1', require('./api')(wagner));
