@@ -114,6 +114,29 @@ describe('REST Server Logging', function() {
 			});
 		});		
 
+
+		it('filter logging with query object', function(done) {
+			var tmp = {source:"abc", text:"a-b-c" };
+			LoggingModel.create(tmp, function(err, data) {
+				tmp = {source:"xyz", text:"x-y-z" };
+				LoggingModel.create(tmp, function(err, data) {
+					/*
+					var url = URL_ROOT + "?f=duration:451+user_name:paul";
+					superagent.get(url, function(err, result) {
+						*/
+					var url = URL_ROOT;
+					var filter = { source:"abc" };
+					superagent.get(url)
+					.query(filter)
+					.end(function(err, result) {
+						assert.equal(result.body.length, 1); 
+						assert.equal(result.body[0].source, "abc"); 
+						assert.equal(result.body[0].text, "a-b-c"); 
+						done();
+					});
+				});
+			});
+		});	
 	
 	});
 });
