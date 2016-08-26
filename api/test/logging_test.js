@@ -8,7 +8,7 @@ var superagent = require('superagent');
 var URL_ROOT = 'http://localhost:3010/logging/';
 
 
-describe('REST Server Logging', function() {
+describe('Logging REST Server', function() {
 	var server;
 	var LoggingModel;
 
@@ -138,6 +138,29 @@ describe('REST Server Logging', function() {
 			});
 		});	
 	
+		it('get last object (one object)', function(done) {
+			var tmp = {source:"abc", text:"a-b-c" };
+			LoggingModel.create(tmp, function(err, data) {
+				tmp = {source:"abc", text:"x-y-z" };
+				LoggingModel.create(tmp, function(err, data) {
+					/*
+					var url = URL_ROOT + "?f=duration:451+user_name:paul";
+					superagent.get(url, function(err, result) {
+						*/
+					var url = URL_ROOT + "/latest";
+					var filter = { source:"abc" };
+					superagent.get(url)
+					.query(filter)
+					.end(function(err, result) {
+						assert.equal(result.body.source, "abc"); 
+						assert.equal(result.body.text, "x-y-z"); 
+						done();
+					});
+				});
+			});
+		});	
+
+
 	});
 });
 

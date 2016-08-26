@@ -11,7 +11,7 @@ var URL_ROOT = 'http://localhost:3010/process/';
 
 
 
-describe('REST Server', function() {
+describe('process REST Server', function() {
 	var server;
 	var ProcessModel;
 	var ActionModel;

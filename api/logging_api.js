@@ -3,6 +3,35 @@ var bodyparser = require('body-parser');
 var express = require('express');
 
 
+
+
+var getFilter = function(req) {
+	var filter = {};
+
+	if (req.query.source) {
+		filter.source = req.query.source;
+	}
+	if (req.query.date) {
+		filter.date = req.query.date;
+	}
+
+	if (filter.date) {
+		// filter on start date 
+		// -> filter on just that date - without time
+		// >= filterDate  &&  < filterDate+1
+		var dt = new Date(filter.date);
+		var minDt = new Date(dt);
+		minDt.setHours(0);
+		minDt.setMinutes(0);
+		minDt.setSeconds(0);
+		var maxDt = new Date(minDt);
+		maxDt.setDate(minDt.getDate()+1);
+
+		filter.date = {"$gte": minDt, "$lt": maxDt};
+	}
+	return filter;
+} 
+
 /*
 	REST interface
 
@@ -77,7 +106,15 @@ module.exports = function(wagner) {
  		};
  	}));
 
+	api.get('/latest', wagner.invoke(function(Logging) {
+		return function(req, res) {
+			var filter = getFilter(req);
 
+ 			Logging.findOne(filter).sort('-date').exec(function(err, data) {
+ 				res.json(data);
+ 			});	
+		}
+	}));
 
 	return api;
 };
